@@ -23,10 +23,6 @@ template <class T>
 VALUE rubyAlloc(VALUE klass) {
   return Data_Wrap_Struct(klass, 0, rubyDelete<T>, new T);
 }
-
-VALUE rubyIdentity(VALUE self) {
-  return self;
-}
 // } end scaffolding
 
 VALUE cmpMethSym;
@@ -39,8 +35,25 @@ struct Compare {
 typedef std::set<VALUE, Compare> Set;
 
 bool Compare::operator()(VALUE const& lhs, VALUE const& rhs) {
-  auto val = rb_funcall(lhs, cmpMethSym, 1, rhs);
-  return NUM2INT(val) < 0;
+  auto cmpVal = rb_funcall(lhs, cmpMethSym, 1, rhs);
+  return NUM2INT(cmpVal) < 0;
+}
+
+VALUE setInitialize(int argc, VALUE *argv, VALUE self) {
+  if (argc == 1) {
+    auto array = rb_check_array_type(argv[0]);
+    if (array == Qnil) {
+      rb_raise(rb_eArgError, "Expected array");
+    }
+    else {
+      Set* set = rubyCast<Set>(self);
+      auto len = RARRAY_LEN(array);
+      for (auto i = 0; i < len; ++i) {
+        set->insert(rb_ary_entry(array, i));
+      }
+    }
+  }
+  return self;
 }
 
 VALUE setAdd(VALUE self, VALUE val) {
@@ -55,15 +68,18 @@ VALUE setLength(VALUE self) {
 }
 
 VALUE setEach(VALUE self) {
-  Set* set = rubyCast<Set>(self);
   if (! rb_block_given_p()) {
-    // TODO: return iterator instead
+    // TODO: return Enumerator
     rb_raise(rb_eArgError, "Expected block");
   }
-
-  for (auto const& val : *set) {
-    rb_yield(val);
+  else {
+    Set* set = rubyCast<Set>(self);
+    for (auto const& val : *set) {
+      rb_yield(val);
+    }
   }
+
+  return Qnil;
 }
 
 VALUE setToString(VALUE self) {
@@ -99,6 +115,70 @@ VALUE setLast(VALUE self) {
   return *last;
 }
 
+VALUE setMutatingDelete(VALUE self, VALUE toDelete) {
+  Set* set = rubyCast<Set>(self);
+  for (auto it = set->begin(); it != set->end(); ++it) {
+    auto cmpVal = rb_funcall(*it, cmpMethSym, 1, toDelete);
+    if (0 == NUM2INT(cmpVal)) {
+      set->erase(it);
+      break;
+    }
+  }
+  return self;
+}
+
+VALUE setMutatingReject(VALUE self) {
+  if (! rb_block_given_p()) {
+    rb_raise(rb_eArgError, "Expected block");
+  }
+  else {
+    Set* set = rubyCast<Set>(self);
+    for (auto it = set->begin(); it != set->end();) {
+      auto predicateRetVal = rb_yield(*it);
+      if (RTEST(predicateRetVal))
+        it = set->erase(it);
+      else
+        ++it;
+    }
+  }
+  return self;
+}
+
+VALUE setMutatingRejectFirst(VALUE self) {
+  if (! rb_block_given_p()) {
+    rb_raise(rb_eArgError, "Expected block");
+  }
+  else {
+    Set* set = rubyCast<Set>(self);
+    for (auto it = set->begin(); it != set->end(); ++it) {
+      auto predicateRetVal = rb_yield(*it);
+      if (RTEST(predicateRetVal)) {
+        set->erase(it);
+        break;
+      }
+    }
+  }
+  return self;
+}
+
+VALUE setMutatingSelect(VALUE self) {
+  if (! rb_block_given_p()) {
+    rb_raise(rb_eArgError, "Expected block");
+    return self;
+  }
+  else {
+    Set* set = rubyCast<Set>(self);
+    for (auto it = set->begin(); it != set->end();) {
+      auto predicateRetVal = rb_yield(*it);
+      if (! RTEST(predicateRetVal))
+        it = set->erase(it);
+      else
+        ++it;
+    }
+  }
+  return self;
+}
+
 } // end namespace
 
 extern "C" {
@@ -115,7 +195,7 @@ extern "C" {
     rb_define_alloc_func(rbSet, rubyAlloc<Set>);
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
-    rb_define_method(rbSet, "initialize", RUBY_METHOD_FUNC(rubyIdentity), 0);
+    rb_define_method(rbSet, "initialize", RUBY_METHOD_FUNC(setInitialize), -1);
     rb_define_method(rbSet, "add", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "<<", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "length", RUBY_METHOD_FUNC(setLength), 0);
@@ -123,6 +203,10 @@ extern "C" {
     rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
     rb_define_method(rbSet, "first", RUBY_METHOD_FUNC(setFirst), 0);
     rb_define_method(rbSet, "last", RUBY_METHOD_FUNC(setLast), 0);
+    rb_define_method(rbSet, "delete", RUBY_METHOD_FUNC(setMutatingDelete), 1);
+    rb_define_method(rbSet, "reject!", RUBY_METHOD_FUNC(setMutatingReject), 0);
+    rb_define_method(rbSet, "reject_first!", RUBY_METHOD_FUNC(setMutatingRejectFirst), 0);
+    rb_define_method(rbSet, "select!", RUBY_METHOD_FUNC(setMutatingSelect), 0);
 
     // i saw this somewhere... but it dumps core... so um...
     // ruby_finalize();
