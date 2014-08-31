@@ -106,4 +106,10 @@ describe RbLovelySorted::Set do
     expect(@set.shift).to equal 2
     expect(@set.to_a).to eql [3, 5]
   end
+
+  it "has working include?" do
+    make_set 5, 2, 3
+    expect(@set.include? 2).to equal true
+    expect(@set.include? 4).to equal false
+  end
 end

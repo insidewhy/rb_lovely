@@ -203,6 +203,12 @@ VALUE setPop(VALUE self) {
   return bak;
 }
 
+VALUE setHas(VALUE self, VALUE val) {
+  Set* set = rubyCast<Set>(self);
+  auto it = set->find(val);
+  return it == set->end() ? Qfalse : Qtrue;
+}
+
 } // end namespace
 
 extern "C" {
@@ -233,6 +239,8 @@ extern "C" {
     rb_define_method(rbSet, "select!", RUBY_METHOD_FUNC(setMutatingSelect), 0);
     rb_define_method(rbSet, "shift", RUBY_METHOD_FUNC(setShift), 0);
     rb_define_method(rbSet, "pop", RUBY_METHOD_FUNC(setPop), 0);
+    // Enumerable provides a slower version of this
+    rb_define_method(rbSet, "include?", RUBY_METHOD_FUNC(setHas), 1);
 
     // i saw this somewhere... but it dumps core... so um...
     // ruby_finalize();
