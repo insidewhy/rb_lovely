@@ -44,7 +44,7 @@ typedef boost::multi_index_container<
   >
 > Set;
 
-VALUE setInitialize(int argc, VALUE *argv, VALUE self) {
+VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
   if (argc == 1) {
     auto array = rb_check_array_type(argv[0]);
     if (array == Qnil) {
@@ -66,7 +66,7 @@ VALUE setInitialize(int argc, VALUE *argv, VALUE self) {
   return self;
 }
 
-VALUE setUpdate(VALUE self, VALUE key, VALUE val) {
+VALUE hashUpdate(VALUE self, VALUE key, VALUE val) {
   Set* set = rubyCast<Set>(self);
   // TODO: overwrite value
   auto it = set->find(key);
@@ -77,7 +77,7 @@ VALUE setUpdate(VALUE self, VALUE key, VALUE val) {
   return self;
 }
 
-VALUE setGet(VALUE self, VALUE key) {
+VALUE hashGet(VALUE self, VALUE key) {
   Set* set = rubyCast<Set>(self);
   auto it = set->find(key);
   if (it == set->end()) {
@@ -88,7 +88,7 @@ VALUE setGet(VALUE self, VALUE key) {
   }
 }
 
-VALUE setEach(VALUE self) {
+VALUE hashEach(VALUE self) {
   if (! rb_block_given_p()) {
     // TODO: return Enumerator
     rb_raise(rb_eArgError, "Expected block");
@@ -103,7 +103,7 @@ VALUE setEach(VALUE self) {
   return Qnil;
 }
 
-VALUE setToString(VALUE self) {
+VALUE hashToString(VALUE self) {
   std::stringstream str;
   str << "RbLovelySets::SortedHash {";
   Set* set = rubyCast<Set>(self);
@@ -121,12 +121,12 @@ VALUE setToString(VALUE self) {
   return rb_str_new(stlString.data(), stlString.size());
 }
 
-VALUE setFirst(VALUE self) {
+VALUE hashFirst(VALUE self) {
   Set* set = rubyCast<Set>(self);
   return set->empty() ? Qnil : set->get<1>().begin()->val;
 }
 
-VALUE setLast(VALUE self) {
+VALUE hashLast(VALUE self) {
   Set* set = rubyCast<Set>(self);
   if (set->empty())
     return Qnil;
@@ -136,7 +136,7 @@ VALUE setLast(VALUE self) {
   return last->val;
 }
 
-VALUE setMutatingDelete(VALUE self, VALUE toDelete) {
+VALUE hashMutatingDelete(VALUE self, VALUE toDelete) {
   Set* set = rubyCast<Set>(self);
   auto it = set->find(toDelete);
   if (it == set->end()) {
@@ -156,27 +156,27 @@ extern "C" {
   using namespace rb_lovely_sets::hybrid;
 
   void Init_rb_lovely_sets_hybrid_set() {
-    auto rbSet = rb_define_class_under(rbMod, "SortedHash", rb_cObject);
-    rb_define_alloc_func(rbSet, rubyAlloc<Set>);
-    rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
+    auto rbHash = rb_define_class_under(rbMod, "SortedHash", rb_cObject);
+    rb_define_alloc_func(rbHash, rubyAlloc<Set>);
+    rb_include_module(rbHash, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
-    rb_define_method(rbSet, "initialize", RUBY_METHOD_FUNC(setInitialize), -1);
-    initSet<Set>(rbSet);
-    rb_define_method(rbSet, "[]=", RUBY_METHOD_FUNC(setUpdate), 2);
-    rb_define_method(rbSet, "[]", RUBY_METHOD_FUNC(setGet), 1);
-    rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);
-    rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
-    rb_define_method(rbSet, "first", RUBY_METHOD_FUNC(setFirst), 0);
-    rb_define_method(rbSet, "last", RUBY_METHOD_FUNC(setLast), 0);
-    rb_define_method(rbSet, "delete", RUBY_METHOD_FUNC(setMutatingDelete), 1);
-    // rb_define_method(rbSet, "reject!", RUBY_METHOD_FUNC(setMutatingReject), 0);
-    // rb_define_method(rbSet, "reject_first!", RUBY_METHOD_FUNC(setMutatingRejectFirst), 0);
-    // rb_define_method(rbSet, "select!", RUBY_METHOD_FUNC(setMutatingSelect), 0);
-    // rb_define_method(rbSet, "shift", RUBY_METHOD_FUNC(setShift), 0);
-    // rb_define_method(rbSet, "pop", RUBY_METHOD_FUNC(setPop), 0);
+    rb_define_method(rbHash, "initialize", RUBY_METHOD_FUNC(hashInitialize), -1);
+    initSet<Set>(rbHash);
+    rb_define_method(rbHash, "[]=", RUBY_METHOD_FUNC(hashUpdate), 2);
+    rb_define_method(rbHash, "[]", RUBY_METHOD_FUNC(hashGet), 1);
+    rb_define_method(rbHash, "each", RUBY_METHOD_FUNC(hashEach), 0);
+    rb_define_method(rbHash, "to_s", RUBY_METHOD_FUNC(hashToString), 0);
+    rb_define_method(rbHash, "first", RUBY_METHOD_FUNC(hashFirst), 0);
+    rb_define_method(rbHash, "last", RUBY_METHOD_FUNC(hashLast), 0);
+    rb_define_method(rbHash, "delete", RUBY_METHOD_FUNC(hashMutatingDelete), 1);
+    // rb_define_method(rbHash, "reject!", RUBY_METHOD_FUNC(hashMutatingReject), 0);
+    // rb_define_method(rbHash, "reject_first!", RUBY_METHOD_FUNC(hashMutatingRejectFirst), 0);
+    // rb_define_method(rbHash, "select!", RUBY_METHOD_FUNC(hashMutatingSelect), 0);
+    // rb_define_method(rbHash, "shift", RUBY_METHOD_FUNC(hashShift), 0);
+    // rb_define_method(rbHash, "pop", RUBY_METHOD_FUNC(hashPop), 0);
     // // Enumerable provides a slower version of this
-    // rb_define_method(rbSet, "has_key?", RUBY_METHOD_FUNC(setHas), 1);
-    // rb_define_method(rbSet, "include?", RUBY_METHOD_FUNC(setHas), 1);
+    // rb_define_method(rbHash, "has_key?", RUBY_METHOD_FUNC(hashHas), 1);
+    // rb_define_method(rbHash, "include?", RUBY_METHOD_FUNC(hashHas), 1);
   }
 }
 #endif
