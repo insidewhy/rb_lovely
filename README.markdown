@@ -105,8 +105,8 @@ hash.each { |key, value| do_stuff(key, value) }
 ```
 
 ### Removing elements
-hash = RbLovelySets::SortedHash.new 9, 2, 3, 4
 ```ruby
+hash = RbLovelySets::SortedHash.new 9, 2, 3, 4
 expect(hash.delete 9).to equal 2
 expect(hash.to_a).to eql [[3, 4]]
 # etc. etc.
