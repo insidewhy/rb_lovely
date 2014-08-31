@@ -1,32 +1,11 @@
-#include "ruby.h"
+#include "set.hpp"
 
-#include <iostream>
+#include "ruby_util.hpp"
+
 #include <set>
 #include <sstream>
 
-namespace rb_lovely_sets {
-
-// Scaffolding stuff for ruby {
-template <class T>
-void rubyDelete(T *obj) {
-  delete obj;
-}
-
-template <class T>
-T *rubyCast(VALUE rbObj) {
-  T *obj;
-  Data_Get_Struct(rbObj, T, obj);
-  return obj;
-}
-
-template <class T>
-VALUE rubyAlloc(VALUE klass) {
-  return Data_Wrap_Struct(klass, 0, rubyDelete<T>, new T);
-}
-// } end scaffolding
-
-VALUE cmpMethSym;
-VALUE to_sSym;
+namespace rb_lovely_sets { namespace ordered {
 
 struct Compare {
   bool operator()(VALUE const& lhs, VALUE const& rhs);
@@ -60,11 +39,6 @@ VALUE setAdd(VALUE self, VALUE val) {
   Set* set = rubyCast<Set>(self);
   set->insert(val);
   return self;
-}
-
-VALUE setLength(VALUE self) {
-  Set* set = rubyCast<Set>(self);
-  return INT2NUM(set->size());
 }
 
 VALUE setEach(VALUE self) {
@@ -209,26 +183,21 @@ VALUE setHas(VALUE self, VALUE val) {
   return it == set->end() ? Qfalse : Qtrue;
 }
 
-} // end namespace
+} } // end namespace
 
 extern "C" {
   using namespace rb_lovely_sets;
-  void Init_rb_lovely_sets() {
-    ruby_init();
-    ruby_init_loadpath();
+  using namespace rb_lovely_sets::ordered;
 
-    cmpMethSym = rb_intern("<=>");
-    to_sSym = rb_intern("to_s");
-
-    auto rbMod = rb_define_module("RbLovelySets");
+  void Init_rb_lovely_sets_ordered_set() {
     auto rbSet = rb_define_class_under(rbMod, "OrderedSet", rb_cObject);
     rb_define_alloc_func(rbSet, rubyAlloc<Set>);
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
     rb_define_method(rbSet, "initialize", RUBY_METHOD_FUNC(setInitialize), -1);
+    initSet<Set>(rbSet);
     rb_define_method(rbSet, "add", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "<<", RUBY_METHOD_FUNC(setAdd), 1);
-    rb_define_method(rbSet, "length", RUBY_METHOD_FUNC(setLength), 0);
     rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);
     rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
     rb_define_method(rbSet, "first", RUBY_METHOD_FUNC(setFirst), 0);
@@ -241,8 +210,5 @@ extern "C" {
     rb_define_method(rbSet, "pop", RUBY_METHOD_FUNC(setPop), 0);
     // Enumerable provides a slower version of this
     rb_define_method(rbSet, "include?", RUBY_METHOD_FUNC(setHas), 1);
-
-    // i saw this somewhere... but it dumps core... so um...
-    // ruby_finalize();
   }
 }

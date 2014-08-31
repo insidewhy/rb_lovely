@@ -16,7 +16,7 @@ describe RbLovelySets::OrderedSet do
     expect(@set.length).to equal 2
   end
 
-  it "adds items to set in order according to <=> operator" do
+  it "adds items to set in order according to <=> operator and iterates with each" do
     class Item < Struct.new(:num)
       def <=> other
         return num - other.num

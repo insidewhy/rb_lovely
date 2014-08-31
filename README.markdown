@@ -1,8 +1,14 @@
 # Ruby Lovely Sets
 
-Provides SortedSet, like Ruby's [SortedSet](http://ruby-doc.org/stdlib-1.9.3/libdoc/set/rdoc/SortedSet.html) but built using C++ STL's std::set. Has good tests. Used to build the [catmist matching algorithm](http://catmist.com) as [the builtin OrderedSet class turned out not to be that great](http://architecturalatrocities.com/post/23659800703/the-ruby-standard-library-is-a-disgracene).
+1. SortedSet: like Ruby's [SortedSet](http://ruby-doc.org/stdlib-1.9.3/libdoc/set/rdoc/SortedSet.html) but built using C++ STL's std::set. Has good tests. Used to build the [catmist matching algorithm](http://catmist.com) as [the builtin OrderedSet class turned out not to be that great](http://architecturalatrocities.com/post/23659800703/the-ruby-standard-library-is-a-disgracene).
 
-## Adding elements to a set
+2. HybridSet: An associative array ordered by the values.
+
+## Ordered Set
+
+An ordered set with no duplicates.
+
+### Adding elements
 Compares elements using <=> methods to order elements, adding elements has complexity O(log(n)).
 ```ruby
 class Person < Struct.new(:name, :age)
@@ -25,7 +31,7 @@ set.add Person.new('Gond', 12)
 expect(set.length).to equal 5
 ```
 
-## Removing elements
+### Removing elements
 
 Deletes first element for which: (argument <=> element) == 0. Complexity: O(log(n)).
 ```ruby
@@ -34,14 +40,14 @@ set.delete 3
 expect(set.to_a).to eql [1, 5]
 ```
 
-## Access to first and last elements
+### Access to first and last elements
 ```ruby
 set = RbLovelySets::SortedSet.new [4, 0, 2]
 expect(set.first).to equal 0
 expect(set.last).to equal 4
 ```
 
-## Filtering the set
+### Filtering
 Complexity: O(n).
 ```ruby
 set = RbLovelySets::SortedSet.new [0, 1, 2, 9]
@@ -50,19 +56,19 @@ set.reject_first!(&:odd?)
 set.select!(&:even?)
 ```
 
-## Iteration
+### Iteration
 ```ruby
 set = RbLovelySets::SortedSet.new ['bustin', 'all my dreams']
 set.each { |str| p str }
 ```
 
-## Enumerable methods are mixed in
+### Enumerable methods are mixed in
 ```ruby
 set = RbLovelySets::SortedSet.new [12, 4, 42]
 set.reject { |num| num < 15 }
 ```
 
-## Removing first and last elements
+### Removing first and last elements
 ```ruby
 set = RbLovelySets::SortedSet.new [5, 2, 3]
 set.pop
@@ -71,12 +77,31 @@ set.shift
 expect(set.to_a).to eql [3]
 ```
 
+## Hybrid Set
+A HybridSet provides ordered values and hashed keys. Values are compared using "<=>" and keys are compared using "==". This class is only provided if boost is available on the system when the gem is installed.
+
+### Adding elements
+```ruby
+set = RbLovelySets::HybridSet.new
+set[20] = 5
+set[9] = 1
+set[2] = 16
+set[20] = 4
+expect(set[2]).to equal 16
+# proc is guarantee to get values in value order so:
+#   9, 1
+#   20, 4
+#   16, 2
+set.each { |key, value| do_stuff(key, value) }
+```
+
 # TODO:
 
-1. Set: A hash set with constant time lookup.
-2. Return enumerator when calling iterator function without block:
+1. Return enumerator when calling iterator function without block:
 ```ruby
 iter = s.each
 p iter.next
 p iter.next
 ```
+
+2. Other stuff?
