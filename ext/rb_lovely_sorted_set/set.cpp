@@ -77,11 +77,26 @@ VALUE setToString(VALUE self) {
       str << ", " << RSTRING_PTR(rb_funcall(*it, to_sSym, 0));
     }
   }
-
   str << " }";
 
   auto stlString = str.str();
   return rb_str_new(stlString.data(), stlString.size());
+}
+
+VALUE setFirst(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+
+  return set->empty() ? Qnil : *set->begin();
+}
+
+VALUE setLast(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+  if (set->empty())
+    return Qnil;
+
+  auto last = set->end();
+  --last;
+  return *last;
 }
 
 } // end namespace
@@ -102,9 +117,12 @@ extern "C" {
 
     rb_define_method(rbSet, "initialize", RUBY_METHOD_FUNC(rubyIdentity), 0);
     rb_define_method(rbSet, "add", RUBY_METHOD_FUNC(setAdd), 1);
+    rb_define_method(rbSet, "<<", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "length", RUBY_METHOD_FUNC(setLength), 0);
     rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);
     rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
+    rb_define_method(rbSet, "first", RUBY_METHOD_FUNC(setFirst), 0);
+    rb_define_method(rbSet, "last", RUBY_METHOD_FUNC(setLast), 0);
 
     // i saw this somewhere... but it dumps core... so um...
     // ruby_finalize();

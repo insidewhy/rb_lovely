@@ -5,7 +5,7 @@ describe RbLovelySorted::Set do
     set = RbLovelySorted::Set.new
     set.add 14
     expect(set.length).to equal 1
-    set.add 19
+    set << 19
     expect(set.length).to equal 2
   end
 
@@ -47,11 +47,23 @@ describe RbLovelySorted::Set do
     expect(set.length).to equal 2
   end
 
-  it "#to_string looks nice" do
+  it "has nice #to_string return value" do
     set = RbLovelySorted::Set.new
     set.add 5
     set.add 3
     set.add 1
     expect(set.to_s).to eql "RbLovelySorted::Set { 1, 3, 5 }"
+  end
+
+  it "has working last and first methods" do
+    set = RbLovelySorted::Set.new
+    expect(set.first).to equal nil
+    expect(set.last).to equal nil
+
+    set.add 4
+    set.add 2
+    set.add 0
+    expect(set.first).to equal 0
+    expect(set.last).to equal 4
   end
 end
