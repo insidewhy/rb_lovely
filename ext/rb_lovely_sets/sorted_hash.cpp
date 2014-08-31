@@ -40,7 +40,7 @@ typedef boost::multi_index_container<
   member,
   mi::indexed_by<
     mi::hashed_unique< mi::member<member, VALUE, &member::key> >,
-    mi::ordered_unique< mi::identity<member> >
+    mi::ordered_non_unique< mi::identity<member> >
   >
 > Set;
 
@@ -51,12 +51,16 @@ VALUE setInitialize(int argc, VALUE *argv, VALUE self) {
       rb_raise(rb_eArgError, "Expected array");
     }
     else {
-      Set* set = rubyCast<Set>(self);
-      // TODO:
-      // auto len = RARRAY_LEN(array);
-      // for (auto i = 0; i < len; ++i) {
-      //   set->insert(member(rb_ary_entry(array, i)));
-      // }
+      auto len = RARRAY_LEN(array);
+      if (len % 2 != 0) {
+        rb_raise(rb_eArgError, "Expected even number of parameters");
+      }
+      else {
+        Set* set = rubyCast<Set>(self);
+        for (auto i = 0; i < len; i += 2) {
+          set->insert(member(rb_ary_entry(array, i), rb_ary_entry(array, i + 1)));
+        }
+      }
     }
   }
   return self;
@@ -117,6 +121,20 @@ VALUE setToString(VALUE self) {
   return rb_str_new(stlString.data(), stlString.size());
 }
 
+VALUE setFirst(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+  return set->empty() ? Qnil : set->get<1>().begin()->val;
+}
+
+VALUE setLast(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+  if (set->empty())
+    return Qnil;
+
+  auto last = set->get<1>().end();
+  --last;
+  return last->val;
+}
 
 } }
 
@@ -135,8 +153,8 @@ extern "C" {
     rb_define_method(rbSet, "[]", RUBY_METHOD_FUNC(setGet), 1);
     rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);
     rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
-    // rb_define_method(rbSet, "first", RUBY_METHOD_FUNC(setFirst), 0);
-    // rb_define_method(rbSet, "last", RUBY_METHOD_FUNC(setLast), 0);
+    rb_define_method(rbSet, "first", RUBY_METHOD_FUNC(setFirst), 0);
+    rb_define_method(rbSet, "last", RUBY_METHOD_FUNC(setLast), 0);
     // rb_define_method(rbSet, "delete", RUBY_METHOD_FUNC(setMutatingDelete), 1);
     // rb_define_method(rbSet, "reject!", RUBY_METHOD_FUNC(setMutatingReject), 0);
     // rb_define_method(rbSet, "reject_first!", RUBY_METHOD_FUNC(setMutatingRejectFirst), 0);

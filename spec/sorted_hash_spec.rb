@@ -16,24 +16,26 @@ describe RbLovelySets::SortedHash do
     expect(@hash.length).to equal 2
   end
 
+  it "constructs from array" do
+    expect { @hash = RbLovelySets::SortedHash.new("string should be array") }.to raise_error
+    make_hash 9, 5, 4, 5, 14, 1
+    expect(@hash.to_a).to eql [[14, 1], [9, 5], [4, 5]]
+  end
+
   it "iterates in value order according to <=> operator" do
-    @hash[2] = 14
-    @hash[3] = 1
-    @hash[4] = 99
+    make_hash 2, 14, 3, 1, 4, 99
     expect { |b| @hash.each(&b) }.to yield_successive_args([3, 1], [2, 14], [4, 99])
   end
 
   it "does not add duplicates" do
-    @hash[2] = 9
-    @hash[4] = 10
+    make_hash 2, 9, 4, 10
     expect(@hash.length).to equal 2
     @hash[2] = 12
     expect(@hash.length).to equal 2
   end
 
   it "can access element by key" do
-    @hash[2] = 9
-    @hash[4] = 10
+    make_hash 2, 9, 4, 10
     expect(@hash[2]).to equal 9
     expect(@hash[3]).to equal nil
     expect(@hash[4]).to equal 10
@@ -46,18 +48,21 @@ describe RbLovelySets::SortedHash do
   end
 
   it "mixes in method from Enumerable" do
-    @hash[2] = 9
-    @hash[15] = 2
-    @hash[16] = 4
-    @hash[3] = 1
+    make_hash 2, 9, 15, 2, 16, 4, 3, 1
     not_rejected = @hash.reject { |k, v| v.odd? }
     expect(not_rejected).to eql([[15, 2], [16, 4]])
   end
 
   it "has nice #to_s return value" do
+    make_hash 2, 5, 5, 2
     @hash[2] = 5
     @hash[5] = 2
     expect(@hash.to_s).to eql "RbLovelySets::SortedHash { 5 => 2, 2 => 5 }"
   end
 
+  it "has working last and first methods" do
+    make_hash 2, "a", 1, "z", 2000, "b"
+    expect(@hash.first).to eql "a"
+    expect(@hash.last).to eql "z"
+  end
 end
