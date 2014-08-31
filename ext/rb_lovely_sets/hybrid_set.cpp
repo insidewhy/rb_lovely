@@ -106,7 +106,7 @@ extern "C" {
   using namespace rb_lovely_sets::hybrid;
 
   void Init_rb_lovely_sets_hybrid_set() {
-    auto rbSet = rb_define_class_under(rbMod, "HybridSet", rb_cObject);
+    auto rbSet = rb_define_class_under(rbMod, "SortedHash", rb_cObject);
     rb_define_alloc_func(rbSet, rubyAlloc<Set>);
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 

@@ -2,7 +2,7 @@
 
 1. SortedSet: like Ruby's [SortedSet](http://ruby-doc.org/stdlib-1.9.3/libdoc/set/rdoc/SortedSet.html) but built using C++ STL's std::set. Has good tests. Used to build the [catmist matching algorithm](http://catmist.com) as [the builtin OrderedSet class turned out not to be that great](http://architecturalatrocities.com/post/23659800703/the-ruby-standard-library-is-a-disgracene).
 
-2. HybridSet: An associative array ordered by the values.
+2. SortedHash: An associative array ordered by the values.
 
 ## Ordered Set
 
@@ -77,12 +77,12 @@ set.shift
 expect(set.to_a).to eql [3]
 ```
 
-## Hybrid Set
-A HybridSet provides ordered values and hashed keys. Values are compared using "<=>" and keys are compared using "==". This class is only provided if boost is available on the system when the gem is installed.
+## SortedHash
+A SortedHash provides ordered values and hashed keys. Values are compared using "<=>" and keys are compared using "==". This class is only provided if boost is available on the system when the gem is installed.
 
 ### Adding elements
 ```ruby
-set = RbLovelySets::HybridSet.new
+set = RbLovelySets::SortedHash.new
 set[20] = 5
 set[9] = 1
 set[2] = 16
@@ -105,7 +105,7 @@ p iter.next
 p iter.next
 ```
 
-## More HybridSet methods
+## More SortedHash methods
 ```ruby
 set.delete key
 # etc.
