@@ -1,0 +1,7 @@
+.*.swp
+/.*.mf
+/tmp
+/pkg
+/lib
+/Makefile
+/.rake-builder
