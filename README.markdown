@@ -78,7 +78,7 @@ expect(set.to_a).to eql [3]
 ```
 
 ## SortedHash
-A SortedHash provides hashed keys and ordered values. Values are compared using "<=>" and keys are tested for equality using "==". This class is only provided if boost is available on the system when the gem is installed.
+A SortedHash provides hashed keys and ordered values. Values are compared using "<=>" and keys are tested for equality using "==". This class is only provided if boost is available on the system when the gem is installed as it is built using the [Boost Multi-index Containers Library](http://www.boost.org/doc/libs/1_56_0/libs/multi_index/doc/index.html).
 
 ### Adding elements
 ```ruby
