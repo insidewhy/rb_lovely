@@ -4,6 +4,7 @@ namespace rb_lovely_sets {
   // extern stuff from ruby_util
   VALUE rbMod;
   VALUE cmpMethSym;
+  VALUE equalitySym;
   VALUE to_sSym;
   VALUE hashSym;
 }

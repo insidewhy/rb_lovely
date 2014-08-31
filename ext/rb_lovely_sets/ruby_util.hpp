@@ -6,6 +6,7 @@ namespace rb_lovely_sets {
 
 extern VALUE rbMod;
 extern VALUE cmpMethSym;
+extern VALUE equalitySym;
 extern VALUE to_sSym;
 extern VALUE hashSym;
 
@@ -29,6 +30,7 @@ VALUE rubyAlloc(VALUE klass) {
 static void initRubyUtil() {
   rbMod = rb_define_module("RbLovelySets");
   cmpMethSym = rb_intern("<=>");
+  equalitySym = rb_intern("==");
   to_sSym = rb_intern("to_s");
   hashSym = rb_intern("hash");
 }

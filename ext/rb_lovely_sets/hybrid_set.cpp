@@ -17,8 +17,8 @@ struct member {
   }
 
   bool operator==(member const& rhs) const {
-    auto cmpVal = rb_funcall(key, cmpMethSym, 1, rhs.key);
-    return NUM2INT(cmpVal) == 0;
+    auto equalityVal = rb_funcall(key, equalitySym, 1, rhs.key);
+    return RTEST(equalityVal);
   }
 
   // also cache as two element array?
