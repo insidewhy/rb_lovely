@@ -3,7 +3,7 @@
 Like Ruby's [Sorted Set](http://ruby-doc.org/stdlib-1.9.3/libdoc/set/rdoc/SortedSet.html) but built using C++ STL's std::set. Has good tests. Used to build the [catmist matching algorithm](http://catmist.com) as [the builtin OrderedSet class turned out not to be that great](http://architecturalatrocities.com/post/23659800703/the-ruby-standard-library-is-a-disgracene).
 
 ## Adding elements to a set
-Compares elements using <=> methods to order elements:
+Compares elements using <=> methods to order elements, adding elements has complexity O(log(n)).
 ```ruby
 class Person < Struct.new(:name, :age)
   def <=> other
@@ -27,7 +27,7 @@ expect(set.length).to equal 5
 
 ## Removing elements
 
-Deletes first element for which: (argument <=> element) == 0
+Deletes first element for which: (argument <=> element) == 0. Complexity: O(log(n)).
 ```ruby
 set = RbLovelySorted::Set.new([ 1, 5, 3 ])
 set.delete 3
@@ -42,6 +42,7 @@ expect(set.last).to equal 4
 ```
 
 ## Filtering the set
+Complexity: O(n).
 ```ruby
 set = RbLovelySorted::Set.new [0, 1, 2, 9]
 set.reject!(&:odd?)

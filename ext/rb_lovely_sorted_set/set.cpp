@@ -117,15 +117,15 @@ VALUE setLast(VALUE self) {
 
 VALUE setMutatingDelete(VALUE self, VALUE toDelete) {
   Set* set = rubyCast<Set>(self);
-  for (auto it = set->begin(); it != set->end(); ++it) {
-    auto cmpVal = rb_funcall(*it, cmpMethSym, 1, toDelete);
-    if (0 == NUM2INT(cmpVal)) {
-      auto valBackup = *it;
-      set->erase(it);
-      return valBackup;
-    }
+  auto it = set->find(toDelete);
+  if (it == set->end()) {
+    return Qnil;
   }
-  return Qnil;
+  else {
+    auto valBackup = *it;
+    set->erase(it);
+    return valBackup;
+  }
 }
 
 VALUE setMutatingReject(VALUE self) {
