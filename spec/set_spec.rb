@@ -81,12 +81,12 @@ describe RbLovelySorted::Set do
 
   it "has working reject_first!" do
     make_set 8, 3, 2, 1
-    val = @set.reject_first!(&:odd?)
-    expect(val).to equal 1
+    rejected = @set.reject_first!(&:odd?)
+    expect(rejected).to equal 1
     expect(@set.to_a).to eql [2, 3, 8]
 
-    val = @set.reject_first! { |val| val > 8 }
-    expect(val).to equal nil
+    rejected = @set.reject_first! { |val| val > 8 }
+    expect(rejected).to equal nil
   end
 
   it "has working select!" do
