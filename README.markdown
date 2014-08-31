@@ -88,6 +88,7 @@ set[9] = 1
 set[2] = 16
 set[20] = 4
 expect(set[2]).to equal 16
+expect(set.length).to equal 3
 # proc is guarantee to get values in value order so:
 #   9, 1
 #   20, 4
@@ -97,11 +98,15 @@ set.each { |key, value| do_stuff(key, value) }
 
 # TODO:
 
-1. Return enumerator when calling iterator function without block:
+## Return enumerator when calling iterator function without block:
 ```ruby
 iter = s.each
 p iter.next
 p iter.next
 ```
 
-2. Other stuff?
+## More HybridSet methods
+```ruby
+set.delete key
+# etc.
+```

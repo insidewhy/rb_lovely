@@ -21,6 +21,7 @@ struct member {
     return NUM2INT(cmpVal) == 0;
   }
 
+  // also cache as two element array?
   member(VALUE _key, VALUE _val) : key(_key), val(_val) {}
 
   VALUE key;
