@@ -65,4 +65,12 @@ describe RbLovelySets::SortedHash do
     expect(@hash.first).to eql "a"
     expect(@hash.last).to eql "z"
   end
+
+  it "has working delete" do
+    make_hash 8, 3, 9, 1, 2, 7
+    expect(@hash.delete 8).to equal 3
+    expect(@hash.delete 19).to equal nil
+    expect(@hash.to_a).to eql [[9, 1], [2,7]]
+  end
+
 end

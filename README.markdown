@@ -84,31 +84,30 @@ A SortedHash provides hashed keys and ordered values. Values are compared using 
 
 ### Adding elements
 ```ruby
-set = RbLovelySets::SortedHash.new
-set[20] = 5
-set[9] = 1
-set[2] = 16
-set[20] = 4
-expect(set[2]).to equal 16
-expect(set.length).to equal 3
+empty_hash = RbLovelySets::SortedHash.new
+
+# constructor is like: hash[20] = 5 ; hash[9] = 1
+hash = RbLovelySets::SortedHash.new 20, 5, 9, 1
+hash[2] = 16
+hash[20] = 4
+expect(hash[2]).to equal 16
+expect(hash.length).to equal 3
+```
+
+### Iteration
+```ruby
+hash = RbLovelySets::SortedHash.new 20, 5, 9, 1, 2, 16
 # proc is guarantee to get values in value order so:
 #   9, 1
 #   20, 4
 #   2, 16:
-set.each { |key, value| do_stuff(key, value) }
+hash.each { |key, value| do_stuff(key, value) }
 ```
 
-# TODO:
-
-## Return enumerator when calling iterator function without block:
+### Removing elements
+hash = RbLovelySets::SortedHash.new 9, 2, 3, 4
 ```ruby
-iter = s.each
-p iter.next
-p iter.next
-```
-
-## More SortedHash methods
-```ruby
-set.delete key
-# etc.
+expect(hash.delete 9).to equal 2
+expect(hash.to_a).to eql [[3, 4]]
+# etc. etc.
 ```

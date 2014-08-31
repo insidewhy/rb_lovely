@@ -136,6 +136,19 @@ VALUE setLast(VALUE self) {
   return last->val;
 }
 
+VALUE setMutatingDelete(VALUE self, VALUE toDelete) {
+  Set* set = rubyCast<Set>(self);
+  auto it = set->find(toDelete);
+  if (it == set->end()) {
+    return Qnil;
+  }
+  else {
+    auto valBackup = it->val;
+    set->erase(it);
+    return valBackup;
+  }
+}
+
 } }
 
 extern "C" {
@@ -155,13 +168,14 @@ extern "C" {
     rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
     rb_define_method(rbSet, "first", RUBY_METHOD_FUNC(setFirst), 0);
     rb_define_method(rbSet, "last", RUBY_METHOD_FUNC(setLast), 0);
-    // rb_define_method(rbSet, "delete", RUBY_METHOD_FUNC(setMutatingDelete), 1);
+    rb_define_method(rbSet, "delete", RUBY_METHOD_FUNC(setMutatingDelete), 1);
     // rb_define_method(rbSet, "reject!", RUBY_METHOD_FUNC(setMutatingReject), 0);
     // rb_define_method(rbSet, "reject_first!", RUBY_METHOD_FUNC(setMutatingRejectFirst), 0);
     // rb_define_method(rbSet, "select!", RUBY_METHOD_FUNC(setMutatingSelect), 0);
     // rb_define_method(rbSet, "shift", RUBY_METHOD_FUNC(setShift), 0);
     // rb_define_method(rbSet, "pop", RUBY_METHOD_FUNC(setPop), 0);
     // // Enumerable provides a slower version of this
+    // rb_define_method(rbSet, "has_key?", RUBY_METHOD_FUNC(setHas), 1);
     // rb_define_method(rbSet, "include?", RUBY_METHOD_FUNC(setHas), 1);
   }
 }
