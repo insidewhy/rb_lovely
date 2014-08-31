@@ -68,7 +68,8 @@ describe RbLovelySorted::Set do
 
   it "has working delete" do
     make_set 1, 5, 3
-    @set.delete 3
+    expect(@set.delete 4).to eql nil
+    expect(@set.delete 3).to eql 3
     expect(@set.to_a).to eql [1, 5]
   end
 
@@ -80,8 +81,12 @@ describe RbLovelySorted::Set do
 
   it "has working reject_first!" do
     make_set 8, 3, 2, 1
-    @set.reject_first!(&:odd?)
+    val = @set.reject_first!(&:odd?)
+    expect(val).to equal 1
     expect(@set.to_a).to eql [2, 3, 8]
+
+    val = @set.reject_first! { |val| val > 8 }
+    expect(val).to equal nil
   end
 
   it "has working select!" do

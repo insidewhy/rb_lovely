@@ -120,11 +120,12 @@ VALUE setMutatingDelete(VALUE self, VALUE toDelete) {
   for (auto it = set->begin(); it != set->end(); ++it) {
     auto cmpVal = rb_funcall(*it, cmpMethSym, 1, toDelete);
     if (0 == NUM2INT(cmpVal)) {
+      auto valBackup = *it;
       set->erase(it);
-      break;
+      return valBackup;
     }
   }
-  return self;
+  return Qnil;
 }
 
 VALUE setMutatingReject(VALUE self) {
@@ -153,12 +154,13 @@ VALUE setMutatingRejectFirst(VALUE self) {
     for (auto it = set->begin(); it != set->end(); ++it) {
       auto predicateRetVal = rb_yield(*it);
       if (RTEST(predicateRetVal)) {
+        auto valBackup = *it;
         set->erase(it);
-        break;
+        return valBackup;
       }
     }
   }
-  return self;
+  return Qnil;
 }
 
 VALUE setMutatingSelect(VALUE self) {
