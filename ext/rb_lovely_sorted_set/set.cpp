@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <set>
+#include <sstream>
 
 namespace rb_lovely_sorted_set {
 
@@ -28,9 +29,8 @@ VALUE rubyIdentity(VALUE self) {
 }
 // } end scaffolding
 
-VALUE rbMod;
-VALUE rbSet;
 VALUE cmpMethSym;
+VALUE to_sSym;
 
 struct Compare {
   bool operator()(VALUE const& lhs, VALUE const& rhs);
@@ -56,12 +56,32 @@ VALUE setLength(VALUE self) {
 
 VALUE setEach(VALUE self) {
   Set* set = rubyCast<Set>(self);
-  if (! rb_block_given_p())
+  if (! rb_block_given_p()) {
+    // TODO: return iterator instead
     rb_raise(rb_eArgError, "Expected block");
+  }
 
   for (auto const& val : *set) {
     rb_yield(val);
   }
+}
+
+VALUE setToString(VALUE self) {
+  std::stringstream str;
+  str << "RbLovelySorted::Set {";
+  Set* set = rubyCast<Set>(self);
+  if (! set->empty()) {
+    auto it = set->begin();
+    str << ' ' << RSTRING_PTR(rb_funcall(*it, to_sSym, 0));
+    for (++it; it != set->end(); ++it) {
+      str << ", " << RSTRING_PTR(rb_funcall(*it, to_sSym, 0));
+    }
+  }
+
+  str << " }";
+
+  auto stlString = str.str();
+  return rb_str_new(stlString.data(), stlString.size());
 }
 
 } // end namespace
@@ -73,9 +93,10 @@ extern "C" {
     ruby_init_loadpath();
 
     cmpMethSym = rb_intern("<=>");
+    to_sSym = rb_intern("to_s");
 
-    rbMod = rb_define_module("RbLovelySorted");
-    rbSet = rb_define_class_under(rbMod, "Set", rb_cObject);
+    auto rbMod = rb_define_module("RbLovelySorted");
+    auto rbSet = rb_define_class_under(rbMod, "Set", rb_cObject);
     rb_define_alloc_func(rbSet, rubyAlloc<Set>);
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
@@ -83,6 +104,7 @@ extern "C" {
     rb_define_method(rbSet, "add", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "length", RUBY_METHOD_FUNC(setLength), 0);
     rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);
+    rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
 
     // i saw this somewhere... but it dumps core... so um...
     // ruby_finalize();

@@ -1,6 +1,6 @@
 require 'rb_lovely_sorted_set'
 
-describe 'OrderedSet' do
+describe RbLovelySorted::Set do
   it "increases length when adding elements to set" do
     set = RbLovelySorted::Set.new
     set.add 14
@@ -45,5 +45,13 @@ describe 'OrderedSet' do
     expect(set.length).to equal 2
     set.add NamedItem.new('cats', 2)
     expect(set.length).to equal 2
+  end
+
+  it "#to_string looks nice" do
+    set = RbLovelySorted::Set.new
+    set.add 5
+    set.add 3
+    set.add 1
+    expect(set.to_s).to eql "RbLovelySorted::Set { 1, 3, 5 }"
   end
 end
