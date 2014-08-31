@@ -34,11 +34,16 @@ describe 'OrderedSet' do
   end
 
   it "does not add duplicates" do
+    class NamedItem < Struct.new(:name, :num)
+      def <=> other
+        return num - other.num
+      end
+    end
     set = RbLovelySorted::Set.new
-    set.add 1
-    set.add 4
+    set.add NamedItem.new('jimmy', 4)
+    set.add NamedItem.new('anna', 2)
     expect(set.length).to equal 2
-    set.add 4
+    set.add NamedItem.new('cats', 2)
     expect(set.length).to equal 2
   end
 end
