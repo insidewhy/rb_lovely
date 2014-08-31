@@ -92,7 +92,7 @@ expect(set.length).to equal 3
 # proc is guarantee to get values in value order so:
 #   9, 1
 #   20, 4
-#   16, 2
+#   2, 16:
 set.each { |key, value| do_stuff(key, value) }
 ```
 
