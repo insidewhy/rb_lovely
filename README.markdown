@@ -11,9 +11,9 @@ class Person < Struct.new(:name, :age)
   end
 end
 
-empty_set = RbLovelySorted::Set.new
+empty_set = RbLovelySets::SortedSet.new
 
-set = RbLovelySorted::Set.new([ Person.new('Nyamuk', 2), Person.new('Cold Rain', 9999) ])
+set = RbLovelySets::SortedSet.new([ Person.new('Nyamuk', 2), Person.new('Cold Rain', 9999) ])
 set.add Person.new('Beards', 15)
 # << is the same as add, it works for arrays also
 set << Person.new('Anna', 12)
@@ -29,14 +29,14 @@ expect(set.length).to equal 5
 
 Deletes first element for which: (argument <=> element) == 0. Complexity: O(log(n)).
 ```ruby
-set = RbLovelySorted::Set.new([ 1, 5, 3 ])
+set = RbLovelySets::SortedSet.new([ 1, 5, 3 ])
 set.delete 3
 expect(set.to_a).to eql [1, 5]
 ```
 
 ## Access to first and last elements
 ```ruby
-set = RbLovelySorted::Set.new [4, 0, 2]
+set = RbLovelySets::SortedSet.new [4, 0, 2]
 expect(set.first).to equal 0
 expect(set.last).to equal 4
 ```
@@ -44,7 +44,7 @@ expect(set.last).to equal 4
 ## Filtering the set
 Complexity: O(n).
 ```ruby
-set = RbLovelySorted::Set.new [0, 1, 2, 9]
+set = RbLovelySets::SortedSet.new [0, 1, 2, 9]
 set.reject!(&:odd?)
 set.reject_first!(&:odd?)
 set.select!(&:even?)
@@ -52,19 +52,19 @@ set.select!(&:even?)
 
 ## Iteration
 ```ruby
-set = RbLovelySorted::Set.new ['bustin', 'all my dreams']
+set = RbLovelySets::SortedSet.new ['bustin', 'all my dreams']
 set.each { |str| p str }
 ```
 
 ## Enumerable methods are mixed in
 ```ruby
-set = RbLovelySorted::Set.new [12, 4, 42]
+set = RbLovelySets::SortedSet.new [12, 4, 42]
 set.reject { |num| num < 15 }
 ```
 
 ## Removing first and last elements
 ```ruby
-set = RbLovelySorted::Set.new [5, 2, 3]
+set = RbLovelySets::SortedSet.new [5, 2, 3]
 set.pop
 expect(set.to_a).to eql [2, 3]
 set.shift

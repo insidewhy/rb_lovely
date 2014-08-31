@@ -4,7 +4,7 @@
 #include <set>
 #include <sstream>
 
-namespace rb_lovely_sorted_set {
+namespace rb_lovely_sets {
 
 // Scaffolding stuff for ruby {
 template <class T>
@@ -84,7 +84,7 @@ VALUE setEach(VALUE self) {
 
 VALUE setToString(VALUE self) {
   std::stringstream str;
-  str << "RbLovelySorted::Set {";
+  str << "RbLovelySets::OrderedSet {";
   Set* set = rubyCast<Set>(self);
   if (! set->empty()) {
     auto it = set->begin();
@@ -212,16 +212,16 @@ VALUE setHas(VALUE self, VALUE val) {
 } // end namespace
 
 extern "C" {
-  using namespace rb_lovely_sorted_set;
-  void Init_rb_lovely_sorted_set() {
+  using namespace rb_lovely_sets;
+  void Init_rb_lovely_sets() {
     ruby_init();
     ruby_init_loadpath();
 
     cmpMethSym = rb_intern("<=>");
     to_sSym = rb_intern("to_s");
 
-    auto rbMod = rb_define_module("RbLovelySorted");
-    auto rbSet = rb_define_class_under(rbMod, "Set", rb_cObject);
+    auto rbMod = rb_define_module("RbLovelySets");
+    auto rbSet = rb_define_class_under(rbMod, "OrderedSet", rb_cObject);
     rb_define_alloc_func(rbSet, rubyAlloc<Set>);
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 

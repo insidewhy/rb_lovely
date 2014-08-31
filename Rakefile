@@ -1,5 +1,5 @@
 require 'mkmf'
-project = 'rb_lovely_sorted_set'
+project = 'rb_lovely_sets'
 create_makefile(project)
 
 require 'rake/extensiontask'
@@ -9,12 +9,12 @@ spec = Gem::Specification.new do |s|
   s.version = '0.1.4'
   s.authors = ['James Pike']
   s.email   = %w(gems@chilon.net)
-  s.homepage = "https://github.com/nuisanceofcats/rb_lovely_sorted_set"
+  s.homepage = "https://github.com/nuisanceofcats/rb_lovely_sets"
   s.license = 'Expat'
   s.summary = 'A fast sorted set.'
   s.description = 'A fast sorted set built using std::set.'
   s.platform = Gem::Platform::RUBY
-  s.files = ['ext/rb_lovely_sorted_set/set.cpp']
+  s.files = ['ext/rb_lovely_sets/ordered_set.cpp']
   s.extensions = FileList['ext/**/extconf.rb']
 end
 
