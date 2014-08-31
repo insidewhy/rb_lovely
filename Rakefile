@@ -24,3 +24,7 @@ Gem::PackageTask.new(spec) { |pkg| pkg.gem_spec = spec }
 Rake::ExtensionTask.new(project)
 
 task :default => :compile
+
+task :test => [:clobber, :compile] do
+  system 'rspec'
+end
