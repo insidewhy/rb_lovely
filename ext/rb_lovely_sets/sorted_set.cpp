@@ -58,13 +58,13 @@ VALUE setEach(VALUE self) {
 
 VALUE setToString(VALUE self) {
   std::stringstream str;
-  str << "RbLovelySets::OrderedSet {";
+  str << "RbLovelySets::SortedSet {";
   Set* set = rubyCast<Set>(self);
   if (! set->empty()) {
     auto it = set->begin();
-    str << ' ' << RSTRING_PTR(rb_funcall(*it, to_sSym, 0));
+    str << ' ' << toS(*it);
     for (++it; it != set->end(); ++it) {
-      str << ", " << RSTRING_PTR(rb_funcall(*it, to_sSym, 0));
+      str << ", " << toS(*it);
     }
   }
   str << " }";
@@ -189,8 +189,8 @@ extern "C" {
   using namespace rb_lovely_sets;
   using namespace rb_lovely_sets::ordered;
 
-  void Init_rb_lovely_sets_ordered_set() {
-    auto rbSet = rb_define_class_under(rbMod, "OrderedSet", rb_cObject);
+  void Init_rb_lovely_sets_sorted_set() {
+    auto rbSet = rb_define_class_under(rbMod, "SortedSet", rb_cObject);
     rb_define_alloc_func(rbSet, rubyAlloc<Set>);
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 

@@ -12,7 +12,7 @@ namespace rb_lovely_sets {
 extern "C" {
   using namespace rb_lovely_sets;
 
-  extern void Init_rb_lovely_sets_ordered_set();
+  extern void Init_rb_lovely_sets_sorted_set();
 #ifdef HAVE_BOOST_MULTI_INDEX_CONTAINER_HPP
   extern void Init_rb_lovely_sets_hybrid_set();
 #endif
@@ -23,7 +23,7 @@ extern "C" {
 
     initRubyUtil();
 
-    Init_rb_lovely_sets_ordered_set();
+    Init_rb_lovely_sets_sorted_set();
 #ifdef HAVE_BOOST_MULTI_INDEX_CONTAINER_HPP
     Init_rb_lovely_sets_hybrid_set();
 #endif

@@ -44,4 +44,20 @@ describe RbLovelySets::SortedHash do
     @hash[2] = 14
     expect(@hash[2]).to equal 14
   end
+
+  it "mixes in method from Enumerable" do
+    @hash[2] = 9
+    @hash[15] = 2
+    @hash[16] = 4
+    @hash[3] = 1
+    not_rejected = @hash.reject { |k, v| v.odd? }
+    expect(not_rejected).to eql([[15, 2], [16, 4]])
+  end
+
+  it "has nice #to_s return value" do
+    @hash[2] = 5
+    @hash[5] = 2
+    expect(@hash.to_s).to eql "RbLovelySets::SortedHash { 5 => 2, 2 => 5 }"
+  end
+
 end

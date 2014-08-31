@@ -99,6 +99,25 @@ VALUE setEach(VALUE self) {
   return Qnil;
 }
 
+VALUE setToString(VALUE self) {
+  std::stringstream str;
+  str << "RbLovelySets::SortedHash {";
+  Set* set = rubyCast<Set>(self);
+  if (! set->empty()) {
+    auto& idx = set->get<1>();
+    auto it = idx.begin();
+    str << ' ' << toS(it->key) << " => " << toS(it->val);
+    for (++it; it != idx.end(); ++it) {
+      str << ", " << toS(it->key) << " => " << toS(it->val);
+    }
+  }
+  str << " }";
+
+  auto stlString = str.str();
+  return rb_str_new(stlString.data(), stlString.size());
+}
+
+
 } }
 
 extern "C" {
@@ -113,9 +132,9 @@ extern "C" {
     rb_define_method(rbSet, "initialize", RUBY_METHOD_FUNC(setInitialize), -1);
     initSet<Set>(rbSet);
     rb_define_method(rbSet, "[]=", RUBY_METHOD_FUNC(setUpdate), 2);
-    rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);
     rb_define_method(rbSet, "[]", RUBY_METHOD_FUNC(setGet), 1);
-    // rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
+    rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);
+    rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
     // rb_define_method(rbSet, "first", RUBY_METHOD_FUNC(setFirst), 0);
     // rb_define_method(rbSet, "last", RUBY_METHOD_FUNC(setLast), 0);
     // rb_define_method(rbSet, "delete", RUBY_METHOD_FUNC(setMutatingDelete), 1);

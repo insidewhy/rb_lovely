@@ -1,12 +1,12 @@
 require 'rb_lovely_sets'
 
-describe RbLovelySets::OrderedSet do
+describe RbLovelySets::SortedSet do
   before :each do
-    @set = RbLovelySets::OrderedSet.new
+    @set = RbLovelySets::SortedSet.new
   end
 
   def make_set *vals
-    @set = RbLovelySets::OrderedSet.new vals
+    @set = RbLovelySets::SortedSet.new vals
   end
 
   it "has working add, << and length methods" do
@@ -29,7 +29,7 @@ describe RbLovelySets::OrderedSet do
   end
 
   it "constructs from array" do
-    expect { @set = RbLovelySets::OrderedSet.new("string should be array") }.to raise_error
+    expect { @set = RbLovelySets::SortedSet.new("string should be array") }.to raise_error
     make_set 9, 5, 4, 5
     expect(@set.to_a).to eql [4, 5, 9]
   end
@@ -48,13 +48,13 @@ describe RbLovelySets::OrderedSet do
 
   it "mixes in method from Enumerable" do
     make_set 2, 4, 1, 3, 5
-    not_rejected = @set.reject { |v| v % 2 != 0 }
+    not_rejected = @set.reject { |v| v.odd? }
     expect(not_rejected).to eql([2, 4])
   end
 
-  it "has nice #to_string return value" do
+  it "has nice #to_s return value" do
     make_set "the green", "manalishi", "with the two pronged crown"
-    expect(@set.to_s).to eql "RbLovelySets::OrderedSet { manalishi, the green, with the two pronged crown }"
+    expect(@set.to_s).to eql "RbLovelySets::SortedSet { manalishi, the green, with the two pronged crown }"
   end
 
   it "has working last and first methods" do
