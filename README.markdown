@@ -61,6 +61,15 @@ set = RbLovelySorted::Set.new [12, 4, 42]
 set.reject { |num| num < 15 }
 ```
 
+## Removing first and last elements
+```ruby
+set = RbLovelySorted::Set.new [5, 2, 3]
+set.pop
+expect(set.to_a).to eql [2, 3]
+set.shift
+expect(set.to_a).to eql [3]
+```
+
 # TODO:
 
 Return enumerator when calling iterator function without block:

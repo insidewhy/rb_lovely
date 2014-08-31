@@ -181,6 +181,28 @@ VALUE setMutatingSelect(VALUE self) {
   return self;
 }
 
+VALUE setShift(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+  if (set->empty())
+   return Qnil;
+
+  auto bak = *set->begin();
+  set->erase(set->begin());
+  return bak;
+}
+
+VALUE setPop(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+  if (set->empty())
+    return Qnil;
+
+  auto last = set->end();
+  --last;
+  auto bak = *last;
+  set->erase(last);
+  return bak;
+}
+
 } // end namespace
 
 extern "C" {
@@ -209,6 +231,8 @@ extern "C" {
     rb_define_method(rbSet, "reject!", RUBY_METHOD_FUNC(setMutatingReject), 0);
     rb_define_method(rbSet, "reject_first!", RUBY_METHOD_FUNC(setMutatingRejectFirst), 0);
     rb_define_method(rbSet, "select!", RUBY_METHOD_FUNC(setMutatingSelect), 0);
+    rb_define_method(rbSet, "shift", RUBY_METHOD_FUNC(setShift), 0);
+    rb_define_method(rbSet, "pop", RUBY_METHOD_FUNC(setPop), 0);
 
     // i saw this somewhere... but it dumps core... so um...
     // ruby_finalize();

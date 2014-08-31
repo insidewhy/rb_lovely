@@ -94,4 +94,16 @@ describe RbLovelySorted::Set do
     @set.select!(&:even?)
     expect(@set.to_a).to eql [4, 8]
   end
+
+  it "has working pop" do
+    make_set 5, 2, 3
+    expect(@set.pop).to equal 5
+    expect(@set.to_a).to eql [2, 3]
+  end
+
+  it "has working shift" do
+    make_set 5, 2, 3
+    expect(@set.shift).to equal 2
+    expect(@set.to_a).to eql [3, 5]
+  end
 end
