@@ -32,4 +32,13 @@ describe 'OrderedSet' do
     not_rejected = set.reject { |v| v % 2 != 0 }
     expect(not_rejected).to eql([2, 4])
   end
+
+  it "does not add duplicates" do
+    set = RbLovelySorted::Set.new
+    set.add 1
+    set.add 4
+    expect(set.length).to equal 2
+    set.add 4
+    expect(set.length).to equal 2
+  end
 end
