@@ -22,7 +22,7 @@ expect(set.length).to equal 5
 
 # Gond isn't added because <=> returns 0 for him and Anna
 set.add Person.new('Gond', 12)
-expect(set.length).to equal 3
+expect(set.length).to equal 5
 ```
 
 ## Removing elements
