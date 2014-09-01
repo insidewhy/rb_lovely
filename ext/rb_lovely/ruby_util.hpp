@@ -9,6 +9,8 @@ extern VALUE cmpMethSym;
 extern VALUE equalitySym;
 extern VALUE to_sSym;
 extern VALUE hashSym;
+extern VALUE callSym;
+extern VALUE compareSym;
 
 template <class T>
 void rubyDelete(T *obj) {
@@ -33,6 +35,8 @@ static void initRubyUtil() {
   equalitySym = rb_intern("==");
   to_sSym = rb_intern("to_s");
   hashSym = rb_intern("hash");
+  callSym = rb_intern("call");
+  compareSym = ID2SYM(rb_intern("compare"));
 }
 
 }

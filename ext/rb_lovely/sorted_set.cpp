@@ -35,6 +35,11 @@ VALUE setInitialize(int argc, VALUE *argv, VALUE self) {
   return self;
 }
 
+VALUE setLength(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+  return INT2NUM(set->size());
+}
+
 VALUE setAdd(VALUE self, VALUE val) {
   Set* set = rubyCast<Set>(self);
   set->insert(val);
@@ -195,7 +200,7 @@ extern "C" {
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
     rb_define_method(rbSet, "initialize", RUBY_METHOD_FUNC(setInitialize), -1);
-    initSet<Set>(rbSet);
+    rb_define_method(rbSet, "length", RUBY_METHOD_FUNC(setLength), 0);
     rb_define_method(rbSet, "add", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "<<", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);

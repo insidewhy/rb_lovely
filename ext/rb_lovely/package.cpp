@@ -7,6 +7,8 @@ namespace rb_lovely {
   VALUE equalitySym;
   VALUE to_sSym;
   VALUE hashSym;
+  VALUE compareSym;
+  VALUE callSym;
 }
 
 extern "C" {

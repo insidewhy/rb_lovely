@@ -93,4 +93,13 @@ describe RbLovely::SortedHash do
     expect(@hash.has_key? 3).to equal true
     expect(@hash.has_key? 6).to equal false
   end
+
+  it "can use custom sorting function" do
+    # compare reverses normal sort order
+    @hash = RbLovely::SortedHash.new(compare: proc { |a, b| b <=> a })
+    @hash[5] = 1
+    @hash[3] = 2
+    @hash[10] = 3
+    expect { |b| @hash.each(&b) }.to yield_successive_args([10, 3], [3, 2], [5, 1])
+  end
 end

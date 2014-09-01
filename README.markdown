@@ -104,6 +104,15 @@ hash = RbLovelySets::SortedHash.new 20, 5, 9, 1, 2, 16
 hash.each { |key, value| do_stuff(key, value) }
 ```
 
+### Overriding comparison function
+```ruby
+hash = RbLovely::SortedHash.new(compare: proc { |a, b| b <=> a })
+hash[1] = 15
+hash[5] = 1
+# the order of values will be reversed due to the compare function
+hash.each { |key, value| do_stuff(key, value) }
+```
+
 ### Retrieving elements
 ```ruby
 hash = RbLovelySets::SortedHash.new 20, 5, 9, 1, 2, 16

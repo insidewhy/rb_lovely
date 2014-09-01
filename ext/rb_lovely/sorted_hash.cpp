@@ -12,8 +12,10 @@ namespace rb_lovely { namespace hybrid {
 
 struct member {
   bool operator<(member const& rhs) const {
-    auto cmpVal = rb_funcall(val, cmpMethSym, 1, rhs.val);
-    return NUM2INT(cmpVal) < 0;
+    auto cmpResult = compareProc != Qnil ?
+      rb_funcall(compareProc, callSym, 2, val, rhs.val) :
+      rb_funcall(val, cmpMethSym, 1, rhs.val);
+    return NUM2INT(cmpResult) < 0;
   }
 
   bool operator==(member const& rhs) const {
@@ -22,8 +24,10 @@ struct member {
   }
 
   // also cache as two element array?
-  member(VALUE _key, VALUE _val) : key(_key), val(_val) {}
+  member(VALUE _compareProc, VALUE _key, VALUE _val)
+    : compareProc(_compareProc), key(_key), val(_val) {}
 
+  VALUE compareProc;
   VALUE key;
   VALUE val;
 };
@@ -36,19 +40,42 @@ std::size_t hash_value(member const& member) {
 
 namespace mi = boost::multi_index;
 
-typedef boost::multi_index_container<
-  member,
-  mi::indexed_by<
-    mi::hashed_unique< mi::member<member, VALUE, &member::key> >,
-    mi::ordered_non_unique< mi::identity<member> >
-  >
-> Hash;
+struct Hash {
+  boost::multi_index_container<
+    member,
+    mi::indexed_by<
+      mi::hashed_unique< mi::member<member, VALUE, &member::key> >,
+      mi::ordered_non_unique< mi::identity<member> >
+    >
+  > container;
+
+  // proc used to compare values
+  VALUE compareProc = Qnil;
+};
+
+VALUE hashLength(VALUE self) {
+  Hash* hash = rubyCast<Hash>(self);
+  return INT2NUM(hash->container.size());
+}
 
 VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
+  Hash* hash = rubyCast<Hash>(self);
   if (argc == 1) {
     auto array = rb_check_array_type(argv[0]);
     if (array == Qnil) {
-      rb_raise(rb_eArgError, "Expected array");
+      auto kwArgs = rb_check_hash_type(argv[0]);
+      if (kwArgs == Qnil) {
+        rb_raise(rb_eArgError, "Expected array");
+      }
+      else {
+        auto compareProc = rb_hash_aref(kwArgs, compareSym);
+        if (compareProc == Qnil) {
+          rb_raise(rb_eArgError, "Expected compare keyword");
+        }
+        else {
+          hash->compareProc = compareProc;
+        }
+      }
     }
     else {
       auto len = RARRAY_LEN(array);
@@ -56,9 +83,8 @@ VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
         rb_raise(rb_eArgError, "Expected even number of parameters");
       }
       else {
-        Hash* hash = rubyCast<Hash>(self);
         for (auto i = 0; i < len; i += 2) {
-          hash->insert(member(rb_ary_entry(array, i), rb_ary_entry(array, i + 1)));
+          hash->container.insert(member(hash->compareProc, rb_ary_entry(array, i), rb_ary_entry(array, i + 1)));
         }
       }
     }
@@ -69,18 +95,18 @@ VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
 VALUE hashUpdate(VALUE self, VALUE key, VALUE val) {
   Hash* hash = rubyCast<Hash>(self);
   // TODO: overwrite value
-  auto it = hash->find(key);
-  if (it != hash->end())
-    hash->replace(it, member(key, val));
+  auto it = hash->container.find(key);
+  if (it != hash->container.end())
+    hash->container.replace(it, member(hash->compareProc, key, val));
   else
-    hash->insert(member(key, val));
+    hash->container.insert(member(hash->compareProc, key, val));
   return self;
 }
 
 VALUE hashGet(VALUE self, VALUE key) {
   Hash* hash = rubyCast<Hash>(self);
-  auto it = hash->find(key);
-  if (it == hash->end()) {
+  auto it = hash->container.find(key);
+  if (it == hash->container.end()) {
     return Qnil;
   }
   else {
@@ -95,7 +121,7 @@ VALUE hashEach(VALUE self) {
   }
   else {
     Hash* hash = rubyCast<Hash>(self);
-    for (auto const& member : hash->get<1>()) {
+    for (auto const& member : hash->container.get<1>()) {
       rb_yield_values(2, member.key, member.val);
     }
   }
@@ -107,8 +133,8 @@ VALUE hashToString(VALUE self) {
   std::stringstream str;
   str << "RbLovely::SortedHash {";
   Hash* hash = rubyCast<Hash>(self);
-  if (! hash->empty()) {
-    auto& idx = hash->get<1>();
+  if (! hash->container.empty()) {
+    auto& idx = hash->container.get<1>();
     auto it = idx.begin();
     str << ' ' << toS(it->key) << " => " << toS(it->val);
     for (++it; it != idx.end(); ++it) {
@@ -123,38 +149,38 @@ VALUE hashToString(VALUE self) {
 
 VALUE hashFirst(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
-  return hash->empty() ? Qnil : hash->get<1>().begin()->val;
+  return hash->container.empty() ? Qnil : hash->container.get<1>().begin()->val;
 }
 
 VALUE hashLast(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
-  if (hash->empty())
+  if (hash->container.empty())
     return Qnil;
 
-  auto last = hash->get<1>().end();
+  auto last = hash->container.get<1>().end();
   --last;
   return last->val;
 }
 
 VALUE hashMutatingDelete(VALUE self, VALUE toDelete) {
   Hash* hash = rubyCast<Hash>(self);
-  auto it = hash->find(toDelete);
-  if (it == hash->end()) {
+  auto it = hash->container.find(toDelete);
+  if (it == hash->container.end()) {
     return Qnil;
   }
   else {
     auto valBackup = it->val;
-    hash->erase(it);
+    hash->container.erase(it);
     return valBackup;
   }
 }
 
 VALUE hashShift(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
-  if (hash->empty())
+  if (hash->container.empty())
    return Qnil;
 
-  auto& idx = hash->get<1>();
+  auto& idx = hash->container.get<1>();
   auto bak = idx.begin()->val;
   idx.erase(idx.begin());
   return bak;
@@ -162,10 +188,10 @@ VALUE hashShift(VALUE self) {
 
 VALUE hashPop(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
-  if (hash->empty())
+  if (hash->container.empty())
     return Qnil;
 
-  auto& idx = hash->get<1>();
+  auto& idx = hash->container.get<1>();
   auto last = idx.end();
   --last;
   auto bak = last->val;
@@ -175,8 +201,8 @@ VALUE hashPop(VALUE self) {
 
 VALUE hashHas(VALUE self, VALUE key) {
   Hash* hash = rubyCast<Hash>(self);
-  auto it = hash->find(key);
-  return it == hash->end() ? Qfalse : Qtrue;
+  auto it = hash->container.find(key);
+  return it == hash->container.end() ? Qfalse : Qtrue;
 }
 
 } }
@@ -191,7 +217,7 @@ extern "C" {
     rb_include_module(rbHash, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
     rb_define_method(rbHash, "initialize", RUBY_METHOD_FUNC(hashInitialize), -1);
-    initSet<Hash>(rbHash);
+    rb_define_method(rbHash, "length", RUBY_METHOD_FUNC(hashLength), 0);
     rb_define_method(rbHash, "[]=", RUBY_METHOD_FUNC(hashUpdate), 2);
     rb_define_method(rbHash, "[]", RUBY_METHOD_FUNC(hashGet), 1);
     rb_define_method(rbHash, "each", RUBY_METHOD_FUNC(hashEach), 0);
