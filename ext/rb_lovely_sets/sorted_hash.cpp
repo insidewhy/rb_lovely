@@ -149,6 +149,36 @@ VALUE hashMutatingDelete(VALUE self, VALUE toDelete) {
   }
 }
 
+VALUE hashShift(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+  if (set->empty())
+   return Qnil;
+
+  auto& idx = set->get<1>();
+  auto bak = idx.begin()->val;
+  idx.erase(idx.begin());
+  return bak;
+}
+
+VALUE hashPop(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+  if (set->empty())
+    return Qnil;
+
+  auto& idx = set->get<1>();
+  auto last = idx.end();
+  --last;
+  auto bak = last->val;
+  idx.erase(last);
+  return bak;
+}
+
+VALUE hashHas(VALUE self, VALUE key) {
+  Set* set = rubyCast<Set>(self);
+  auto it = set->find(key);
+  return it == set->end() ? Qfalse : Qtrue;
+}
+
 } }
 
 extern "C" {
@@ -172,11 +202,11 @@ extern "C" {
     // rb_define_method(rbHash, "reject!", RUBY_METHOD_FUNC(hashMutatingReject), 0);
     // rb_define_method(rbHash, "reject_first!", RUBY_METHOD_FUNC(hashMutatingRejectFirst), 0);
     // rb_define_method(rbHash, "select!", RUBY_METHOD_FUNC(hashMutatingSelect), 0);
-    // rb_define_method(rbHash, "shift", RUBY_METHOD_FUNC(hashShift), 0);
-    // rb_define_method(rbHash, "pop", RUBY_METHOD_FUNC(hashPop), 0);
-    // // Enumerable provides a slower version of this
-    // rb_define_method(rbHash, "has_key?", RUBY_METHOD_FUNC(hashHas), 1);
-    // rb_define_method(rbHash, "include?", RUBY_METHOD_FUNC(hashHas), 1);
+    rb_define_method(rbHash, "shift", RUBY_METHOD_FUNC(hashShift), 0);
+    rb_define_method(rbHash, "pop", RUBY_METHOD_FUNC(hashPop), 0);
+    // Enumerable would test both key and value for include?
+    rb_define_method(rbHash, "include?", RUBY_METHOD_FUNC(hashHas), 1);
+    rb_define_method(rbHash, "has_key?", RUBY_METHOD_FUNC(hashHas), 1);
   }
 }
 #endif

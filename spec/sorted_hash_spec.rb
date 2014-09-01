@@ -73,4 +73,22 @@ describe RbLovelySets::SortedHash do
     expect(@hash.to_a).to eql [[9, 1], [2,7]]
   end
 
+  it "has working pop" do
+    make_hash 5, 1, 3, 2
+    expect(@hash.pop).to equal 2
+    expect(@hash.to_a).to eql [[5,1]]
+  end
+
+  it "has working shift" do
+    make_hash 5, 1, 3, 2
+    expect(@hash.shift).to equal 1
+    expect(@hash.to_a).to eql [[3,2]]
+  end
+
+  it "has working include? and has_key?" do
+    make_hash 5, 1, 3, 2
+    expect(@hash.include? 5).to equal true
+    expect(@hash.has_key? 3).to equal true
+    expect(@hash.has_key? 6).to equal false
+  end
 end
