@@ -1,5 +1,5 @@
 #ifdef HAVE_BOOST_MULTI_INDEX_CONTAINER_HPP
-#include "set.hpp"
+#include "container.hpp"
 
 #include "ruby_util.hpp"
 
@@ -42,7 +42,7 @@ typedef boost::multi_index_container<
     mi::hashed_unique< mi::member<member, VALUE, &member::key> >,
     mi::ordered_non_unique< mi::identity<member> >
   >
-> Set;
+> Hash;
 
 VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
   if (argc == 1) {
@@ -56,9 +56,9 @@ VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
         rb_raise(rb_eArgError, "Expected even number of parameters");
       }
       else {
-        Set* set = rubyCast<Set>(self);
+        Hash* hash = rubyCast<Hash>(self);
         for (auto i = 0; i < len; i += 2) {
-          set->insert(member(rb_ary_entry(array, i), rb_ary_entry(array, i + 1)));
+          hash->insert(member(rb_ary_entry(array, i), rb_ary_entry(array, i + 1)));
         }
       }
     }
@@ -67,20 +67,20 @@ VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
 }
 
 VALUE hashUpdate(VALUE self, VALUE key, VALUE val) {
-  Set* set = rubyCast<Set>(self);
+  Hash* hash = rubyCast<Hash>(self);
   // TODO: overwrite value
-  auto it = set->find(key);
-  if (it != set->end())
-    set->replace(it, member(key, val));
+  auto it = hash->find(key);
+  if (it != hash->end())
+    hash->replace(it, member(key, val));
   else
-    set->insert(member(key, val));
+    hash->insert(member(key, val));
   return self;
 }
 
 VALUE hashGet(VALUE self, VALUE key) {
-  Set* set = rubyCast<Set>(self);
-  auto it = set->find(key);
-  if (it == set->end()) {
+  Hash* hash = rubyCast<Hash>(self);
+  auto it = hash->find(key);
+  if (it == hash->end()) {
     return Qnil;
   }
   else {
@@ -94,8 +94,8 @@ VALUE hashEach(VALUE self) {
     rb_raise(rb_eArgError, "Expected block");
   }
   else {
-    Set* set = rubyCast<Set>(self);
-    for (auto const& member : set->get<1>()) {
+    Hash* hash = rubyCast<Hash>(self);
+    for (auto const& member : hash->get<1>()) {
       rb_yield_values(2, member.key, member.val);
     }
   }
@@ -106,9 +106,9 @@ VALUE hashEach(VALUE self) {
 VALUE hashToString(VALUE self) {
   std::stringstream str;
   str << "RbLovelySets::SortedHash {";
-  Set* set = rubyCast<Set>(self);
-  if (! set->empty()) {
-    auto& idx = set->get<1>();
+  Hash* hash = rubyCast<Hash>(self);
+  if (! hash->empty()) {
+    auto& idx = hash->get<1>();
     auto it = idx.begin();
     str << ' ' << toS(it->key) << " => " << toS(it->val);
     for (++it; it != idx.end(); ++it) {
@@ -122,50 +122,50 @@ VALUE hashToString(VALUE self) {
 }
 
 VALUE hashFirst(VALUE self) {
-  Set* set = rubyCast<Set>(self);
-  return set->empty() ? Qnil : set->get<1>().begin()->val;
+  Hash* hash = rubyCast<Hash>(self);
+  return hash->empty() ? Qnil : hash->get<1>().begin()->val;
 }
 
 VALUE hashLast(VALUE self) {
-  Set* set = rubyCast<Set>(self);
-  if (set->empty())
+  Hash* hash = rubyCast<Hash>(self);
+  if (hash->empty())
     return Qnil;
 
-  auto last = set->get<1>().end();
+  auto last = hash->get<1>().end();
   --last;
   return last->val;
 }
 
 VALUE hashMutatingDelete(VALUE self, VALUE toDelete) {
-  Set* set = rubyCast<Set>(self);
-  auto it = set->find(toDelete);
-  if (it == set->end()) {
+  Hash* hash = rubyCast<Hash>(self);
+  auto it = hash->find(toDelete);
+  if (it == hash->end()) {
     return Qnil;
   }
   else {
     auto valBackup = it->val;
-    set->erase(it);
+    hash->erase(it);
     return valBackup;
   }
 }
 
 VALUE hashShift(VALUE self) {
-  Set* set = rubyCast<Set>(self);
-  if (set->empty())
+  Hash* hash = rubyCast<Hash>(self);
+  if (hash->empty())
    return Qnil;
 
-  auto& idx = set->get<1>();
+  auto& idx = hash->get<1>();
   auto bak = idx.begin()->val;
   idx.erase(idx.begin());
   return bak;
 }
 
 VALUE hashPop(VALUE self) {
-  Set* set = rubyCast<Set>(self);
-  if (set->empty())
+  Hash* hash = rubyCast<Hash>(self);
+  if (hash->empty())
     return Qnil;
 
-  auto& idx = set->get<1>();
+  auto& idx = hash->get<1>();
   auto last = idx.end();
   --last;
   auto bak = last->val;
@@ -174,9 +174,9 @@ VALUE hashPop(VALUE self) {
 }
 
 VALUE hashHas(VALUE self, VALUE key) {
-  Set* set = rubyCast<Set>(self);
-  auto it = set->find(key);
-  return it == set->end() ? Qfalse : Qtrue;
+  Hash* hash = rubyCast<Hash>(self);
+  auto it = hash->find(key);
+  return it == hash->end() ? Qfalse : Qtrue;
 }
 
 } }
@@ -187,11 +187,11 @@ extern "C" {
 
   void Init_rb_lovely_sets_hybrid_set() {
     auto rbHash = rb_define_class_under(rbMod, "SortedHash", rb_cObject);
-    rb_define_alloc_func(rbHash, rubyAlloc<Set>);
+    rb_define_alloc_func(rbHash, rubyAlloc<Hash>);
     rb_include_module(rbHash, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
     rb_define_method(rbHash, "initialize", RUBY_METHOD_FUNC(hashInitialize), -1);
-    initSet<Set>(rbHash);
+    initSet<Hash>(rbHash);
     rb_define_method(rbHash, "[]=", RUBY_METHOD_FUNC(hashUpdate), 2);
     rb_define_method(rbHash, "[]", RUBY_METHOD_FUNC(hashGet), 1);
     rb_define_method(rbHash, "each", RUBY_METHOD_FUNC(hashEach), 0);

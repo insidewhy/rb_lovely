@@ -111,3 +111,11 @@ expect(hash.delete 9).to equal 2
 expect(hash.to_a).to eql [[3, 4]]
 # etc. etc.
 ```
+
+### Retrieving elements
+```
+hash = RbLovelySets::SortedHash.new 20, 5, 9, 1, 2, 16
+expect(hash[20]).to equal(5)
+expect(hash.include? 9).to equal true
+expect(hash.has_key? 2).to equal true
+```
