@@ -43,6 +43,7 @@ expect(set.to_a).to eql [1, 5]
 ```
 
 ### Access to first and last elements
+Complexity: O(c)
 ```ruby
 set = RbLovelySets::SortedSet.new [4, 0, 2]
 expect(set.first).to equal 0
@@ -71,6 +72,7 @@ set.reject { |num| num < 15 }
 ```
 
 ### Removing first and last elements
+Complexity: O(c)
 ```ruby
 set = RbLovelySets::SortedSet.new [5, 2, 3]
 set.pop
@@ -114,6 +116,7 @@ hash.each { |key, value| do_stuff(key, value) }
 ```
 
 ### Retrieving elements
+Complexity: O(c)
 ```ruby
 hash = RbLovelySets::SortedHash.new 20, 5, 9, 1, 2, 16
 expect(hash[20]).to equal(5)
@@ -124,6 +127,7 @@ expect(hash.last).to equal 16  # highest value
 ```
 
 ### Removing elements
+Complexity: O(c)
 ```ruby
 hash = RbLovelySets::SortedHash.new 9, 2, 3, 4
 expect(hash.delete 9).to equal 2
