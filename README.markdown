@@ -6,9 +6,9 @@ Fast containers with good tests.
 
 2. SortedHash: An associative array hashed by the keys ordered by the values. Used to build the [catmist matching algorithm](http://catmist.com) as [the builtin SortedSet class turned out not to be that great](http://architecturalatrocities.com/post/23659800703/the-ruby-standard-library-is-a-disgracene).
 
-## Ordered Set
+## SortedSet
 
-An ordered set with no duplicates.
+An ordered set with no duplicates. Do not modify while iterating.
 
 ### Adding elements
 Compares elements using <=> methods to order elements, adding elements has complexity O(log(n)).
@@ -80,7 +80,7 @@ expect(set.to_a).to eql [3]
 ```
 
 ## SortedHash
-A SortedHash provides hashed keys and ordered values. Values are compared using "<=>" and keys are tested for equality using "==". This class is only provided if boost is available on the system when the gem is installed as it is built using the [Boost Multi-index Containers Library](http://www.boost.org/doc/libs/1_56_0/libs/multi_index/doc/index.html).
+A SortedHash provides hashed keys and ordered values. Values are compared using "<=>" and keys are tested for equality using "==". This class is only provided if boost is available on the system when the gem is installed as it is built using the [Boost Multi-index Containers Library](http://www.boost.org/doc/libs/1_56_0/libs/multi_index/doc/index.html). Do not modify while iterating.
 
 ### Adding elements
 ```ruby
@@ -89,8 +89,8 @@ empty_hash = RbLovelySets::SortedHash.new
 # constructor is like: hash[20] = 5 ; hash[9] = 1
 hash = RbLovelySets::SortedHash.new 20, 5, 9, 1
 hash[2] = 16
-hash[20] = 4
-expect(hash[2]).to equal 16
+hash[20] = 4 # updates previous value
+expect(hash[20]).to equal 4
 expect(hash.length).to equal 3
 ```
 
@@ -110,6 +110,8 @@ hash = RbLovelySets::SortedHash.new 20, 5, 9, 1, 2, 16
 expect(hash[20]).to equal(5)
 expect(hash.include? 9).to equal true
 expect(hash.has_key? 2).to equal true
+expect(hash.first).to equal 1  # lowest value
+expect(hash.last).to equal 16  # highest value
 ```
 
 ### Removing elements
