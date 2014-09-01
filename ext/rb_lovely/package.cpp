@@ -4,7 +4,7 @@ namespace rb_lovely {
   // extern stuff from ruby_util
   VALUE rbMod;
   VALUE cmpMethSym;
-  VALUE equalitySym;
+  VALUE hashEqualitySym;
   VALUE to_sSym;
   VALUE hashSym;
   VALUE compareSym;

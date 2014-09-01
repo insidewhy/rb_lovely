@@ -19,7 +19,7 @@ struct member {
   }
 
   bool operator==(member const& rhs) const {
-    auto equalityVal = rb_funcall(key, equalitySym, 1, rhs.key);
+    auto equalityVal = rb_funcall(key, hashEqualitySym, 1, rhs.key);
     return RTEST(equalityVal);
   }
 
@@ -219,6 +219,8 @@ extern "C" {
     rb_define_method(rbHash, "initialize", RUBY_METHOD_FUNC(hashInitialize), -1);
     rb_define_method(rbHash, "length", RUBY_METHOD_FUNC(hashLength), 0);
     rb_define_method(rbHash, "[]=", RUBY_METHOD_FUNC(hashUpdate), 2);
+    // like []= but return previous value if there was one
+    // rb_define_method(rbHash, "set", RUBY_METHOD_FUNC(hashGetAndUpdate), 2);
     rb_define_method(rbHash, "[]", RUBY_METHOD_FUNC(hashGet), 1);
     rb_define_method(rbHash, "each", RUBY_METHOD_FUNC(hashEach), 0);
     rb_define_method(rbHash, "to_s", RUBY_METHOD_FUNC(hashToString), 0);
@@ -233,6 +235,9 @@ extern "C" {
     // Enumerable would test both key and value for include?
     rb_define_method(rbHash, "include?", RUBY_METHOD_FUNC(hashHas), 1);
     rb_define_method(rbHash, "has_key?", RUBY_METHOD_FUNC(hashHas), 1);
+    rb_define_method(rbHash, "key?", RUBY_METHOD_FUNC(hashHas), 1);
+    // rb_define_method(rbHash, "has_value?", RUBY_METHOD_FUNC(hashHasValue), 1);
+    // rb_define_method(rbHash, "value?", RUBY_METHOD_FUNC(hashHasValue), 1);
   }
 }
 #endif
