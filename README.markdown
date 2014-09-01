@@ -1,6 +1,6 @@
-# Ruby Lovely Sets
+# rb\_lovely
 
-Has good tests.
+Fast containers with good tests.
 
 1. SortedSet: like Ruby's [SortedSet](http://ruby-doc.org/stdlib-1.9.3/libdoc/set/rdoc/SortedSet.html) but built using C++ STL's std::set.
 
