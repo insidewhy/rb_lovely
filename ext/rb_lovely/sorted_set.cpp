@@ -5,7 +5,7 @@
 #include <set>
 #include <sstream>
 
-namespace rb_lovely_sets { namespace ordered {
+namespace rb_lovely { namespace ordered {
 
 struct Compare {
   bool operator()(VALUE const& lhs, VALUE const& rhs);
@@ -58,7 +58,7 @@ VALUE setEach(VALUE self) {
 
 VALUE setToString(VALUE self) {
   std::stringstream str;
-  str << "RbLovelySets::SortedSet {";
+  str << "RbLovely::SortedSet {";
   Set* set = rubyCast<Set>(self);
   if (! set->empty()) {
     auto it = set->begin();
@@ -186,10 +186,10 @@ VALUE setHas(VALUE self, VALUE val) {
 } } // end namespace
 
 extern "C" {
-  using namespace rb_lovely_sets;
-  using namespace rb_lovely_sets::ordered;
+  using namespace rb_lovely;
+  using namespace rb_lovely::ordered;
 
-  void Init_rb_lovely_sets_sorted_set() {
+  void Init_rb_lovely_sorted_set() {
     auto rbSet = rb_define_class_under(rbMod, "SortedSet", rb_cObject);
     rb_define_alloc_func(rbSet, rubyAlloc<Set>);
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));

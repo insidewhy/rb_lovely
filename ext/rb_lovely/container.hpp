@@ -3,7 +3,7 @@
 
 #include "ruby_util.hpp"
 
-namespace rb_lovely_sets {
+namespace rb_lovely {
 
 template <class T>
 VALUE containerLength(VALUE self) {

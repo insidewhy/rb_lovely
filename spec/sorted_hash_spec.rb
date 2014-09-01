@@ -1,12 +1,12 @@
-require 'rb_lovely_sets'
+require 'rb_lovely'
 
-describe RbLovelySets::SortedHash do
+describe RbLovely::SortedHash do
   before :each do
-    @hash = RbLovelySets::SortedHash.new
+    @hash = RbLovely::SortedHash.new
   end
 
   def make_hash *vals
-    @hash = RbLovelySets::SortedHash.new vals
+    @hash = RbLovely::SortedHash.new vals
   end
 
   it "can add elements to hash" do
@@ -17,7 +17,7 @@ describe RbLovelySets::SortedHash do
   end
 
   it "constructs from array" do
-    expect { @hash = RbLovelySets::SortedHash.new("string should be array") }.to raise_error
+    expect { @hash = RbLovely::SortedHash.new("string should be array") }.to raise_error
     make_hash 9, 5, 4, 5, 14, 1
     expect(@hash.to_a).to eql [[14, 1], [9, 5], [4, 5]]
   end
@@ -57,7 +57,7 @@ describe RbLovelySets::SortedHash do
     make_hash 2, 5, 5, 2
     @hash[2] = 5
     @hash[5] = 2
-    expect(@hash.to_s).to eql "RbLovelySets::SortedHash { 5 => 2, 2 => 5 }"
+    expect(@hash.to_s).to eql "RbLovely::SortedHash { 5 => 2, 2 => 5 }"
   end
 
   it "has working last and first methods" do

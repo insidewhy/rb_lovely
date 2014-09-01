@@ -2,7 +2,7 @@
 #define RB_LOVELY_SETS_UTIL_HPP
 #include "ruby.h"
 
-namespace rb_lovely_sets {
+namespace rb_lovely {
 
 extern VALUE rbMod;
 extern VALUE cmpMethSym;
@@ -28,7 +28,7 @@ VALUE rubyAlloc(VALUE klass) {
 }
 
 static void initRubyUtil() {
-  rbMod = rb_define_module("RbLovelySets");
+  rbMod = rb_define_module("RbLovely");
   cmpMethSym = rb_intern("<=>");
   equalitySym = rb_intern("==");
   to_sSym = rb_intern("to_s");

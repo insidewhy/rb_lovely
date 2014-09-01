@@ -8,7 +8,7 @@
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/member.hpp>
 
-namespace rb_lovely_sets { namespace hybrid {
+namespace rb_lovely { namespace hybrid {
 
 struct member {
   bool operator<(member const& rhs) const {
@@ -105,7 +105,7 @@ VALUE hashEach(VALUE self) {
 
 VALUE hashToString(VALUE self) {
   std::stringstream str;
-  str << "RbLovelySets::SortedHash {";
+  str << "RbLovely::SortedHash {";
   Hash* hash = rubyCast<Hash>(self);
   if (! hash->empty()) {
     auto& idx = hash->get<1>();
@@ -182,10 +182,10 @@ VALUE hashHas(VALUE self, VALUE key) {
 } }
 
 extern "C" {
-  using namespace rb_lovely_sets;
-  using namespace rb_lovely_sets::hybrid;
+  using namespace rb_lovely;
+  using namespace rb_lovely::hybrid;
 
-  void Init_rb_lovely_sets_hybrid_set() {
+  void Init_rb_lovely_hybrid_set() {
     auto rbHash = rb_define_class_under(rbMod, "SortedHash", rb_cObject);
     rb_define_alloc_func(rbHash, rubyAlloc<Hash>);
     rb_include_module(rbHash, rb_const_get(rb_cObject, rb_intern("Enumerable")));

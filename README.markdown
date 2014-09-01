@@ -104,14 +104,6 @@ hash = RbLovelySets::SortedHash.new 20, 5, 9, 1, 2, 16
 hash.each { |key, value| do_stuff(key, value) }
 ```
 
-### Removing elements
-```ruby
-hash = RbLovelySets::SortedHash.new 9, 2, 3, 4
-expect(hash.delete 9).to equal 2
-expect(hash.to_a).to eql [[3, 4]]
-# etc. etc.
-```
-
 ### Retrieving elements
 ```ruby
 hash = RbLovelySets::SortedHash.new 20, 5, 9, 1, 2, 16
@@ -119,3 +111,13 @@ expect(hash[20]).to equal(5)
 expect(hash.include? 9).to equal true
 expect(hash.has_key? 2).to equal true
 ```
+
+### Removing elements
+```ruby
+hash = RbLovelySets::SortedHash.new 9, 2, 3, 4
+expect(hash.delete 9).to equal 2
+expect(hash.delete 10).to equal nil
+expect(hash.to_a).to eql [[3, 4]]
+# etc. etc.
+```
+
