@@ -113,7 +113,7 @@ expect(hash.to_a).to eql [[3, 4]]
 ```
 
 ### Retrieving elements
-```
+```ruby
 hash = RbLovelySets::SortedHash.new 20, 5, 9, 1, 2, 16
 expect(hash[20]).to equal(5)
 expect(hash.include? 9).to equal true

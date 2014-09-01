@@ -61,6 +61,8 @@ describe RbLovelySets::SortedHash do
   end
 
   it "has working last and first methods" do
+    expect(@hash.first).to eql nil
+    expect(@hash.last).to eql nil
     make_hash 2, "a", 1, "z", 2000, "b"
     expect(@hash.first).to eql "a"
     expect(@hash.last).to eql "z"
