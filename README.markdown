@@ -94,6 +94,9 @@ hash[2] = 16
 hash[20] = 4 # updates previous value
 expect(hash[20]).to equal 4
 expect(hash.length).to equal 3
+
+# like hash[2] = 17 but returns previous value, in this case 16
+hash.replace(2, 17)
 ```
 
 ### Iteration

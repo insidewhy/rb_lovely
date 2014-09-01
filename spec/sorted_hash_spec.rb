@@ -102,4 +102,12 @@ describe RbLovely::SortedHash do
     @hash[10] = 3
     expect { |b| @hash.each(&b) }.to yield_successive_args([10, 3], [3, 2], [5, 1])
   end
+
+  it "can update and return previous with update" do
+    make_hash 5, 1, 6, 4
+    expect(@hash.replace 5, 9).to equal 1
+    expect(@hash[5]).to equal 9
+    expect(@hash.replace 8, 10).to equal nil
+    expect(@hash[8]).to equal 10
+  end
 end

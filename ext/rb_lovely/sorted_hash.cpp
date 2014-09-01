@@ -94,13 +94,26 @@ VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
 
 VALUE hashUpdate(VALUE self, VALUE key, VALUE val) {
   Hash* hash = rubyCast<Hash>(self);
-  // TODO: overwrite value
   auto it = hash->container.find(key);
   if (it != hash->container.end())
     hash->container.replace(it, member(hash->compareProc, key, val));
   else
     hash->container.insert(member(hash->compareProc, key, val));
   return self;
+}
+
+VALUE hashReplace(VALUE self, VALUE key, VALUE val) {
+  Hash* hash = rubyCast<Hash>(self);
+  auto it = hash->container.find(key);
+  if (it != hash->container.end()) {
+    auto valBackup = it->val;
+    hash->container.replace(it, member(hash->compareProc, key, val));
+    return valBackup;
+  }
+  else {
+    hash->container.insert(member(hash->compareProc, key, val));
+    return Qnil;
+  }
 }
 
 VALUE hashGet(VALUE self, VALUE key) {
@@ -220,7 +233,7 @@ extern "C" {
     rb_define_method(rbHash, "length", RUBY_METHOD_FUNC(hashLength), 0);
     rb_define_method(rbHash, "[]=", RUBY_METHOD_FUNC(hashUpdate), 2);
     // like []= but return previous value if there was one
-    // rb_define_method(rbHash, "set", RUBY_METHOD_FUNC(hashGetAndUpdate), 2);
+    rb_define_method(rbHash, "replace", RUBY_METHOD_FUNC(hashReplace), 2);
     rb_define_method(rbHash, "[]", RUBY_METHOD_FUNC(hashGet), 1);
     rb_define_method(rbHash, "each", RUBY_METHOD_FUNC(hashEach), 0);
     rb_define_method(rbHash, "to_s", RUBY_METHOD_FUNC(hashToString), 0);
