@@ -112,4 +112,10 @@ describe RbLovely::SortedSet do
     expect(@set.include? 2).to equal true
     expect(@set.include? 4).to equal false
   end
+
+  it "has working #clear" do
+    make_set 5, 2, 3
+    @set.clear
+    expect(@set.to_a).to eql []
+  end
 end

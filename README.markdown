@@ -40,6 +40,7 @@ Deletes first element for which: (argument <=> element) == 0. Complexity: O(log(
 set = RbLovely::SortedSet.new [ 1, 5, 3 ]
 set.delete 3
 expect(set.to_a).to eql [1, 5]
+set.clear # remove all elements
 ```
 
 ### Access to first and last elements
@@ -136,6 +137,7 @@ hash = RbLovely::SortedHash.new [9, 2, 3, 4]
 expect(hash.delete 9).to equal 2
 expect(hash.delete 10).to equal nil
 expect(hash.to_a).to eql [[3, 4]]
+hash.clear # remove all elements
 # etc. etc.
 ```
 

@@ -110,4 +110,10 @@ describe RbLovely::SortedHash do
     expect(@hash.replace 8, 10).to equal nil
     expect(@hash[8]).to equal 10
   end
+
+  it "has working #clear" do
+    make_hash 5, 2, 3, 5
+    @hash.clear
+    expect(@hash.to_a).to eql []
+  end
 end
