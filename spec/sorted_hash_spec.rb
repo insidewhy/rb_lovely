@@ -103,7 +103,7 @@ describe RbLovely::SortedHash do
     expect { |b| @hash.each(&b) }.to yield_successive_args([10, 3], [3, 2], [5, 1])
   end
 
-  it "can update and return previous with update" do
+  it "has working #replace" do
     make_hash 5, 1, 6, 4
     expect(@hash.replace 5, 9).to equal 1
     expect(@hash[5]).to equal 9
@@ -111,9 +111,23 @@ describe RbLovely::SortedHash do
     expect(@hash[8]).to equal 10
   end
 
+  it "can hash string values" do
+    @hash["yeah"] = 14
+    expect(@hash["yeah"]).to equal 14
+    expect(@hash.replace("yeah", 15)).to equal 14
+    expect(@hash["yeah"]).to equal 15
+  end
+
   it "has working #clear" do
     make_hash 5, 2, 3, 5
     @hash.clear
     expect(@hash.to_a).to eql []
+  end
+
+  xit "protects hashed values from garbage collector" do
+    @hash[14] = 'val'
+    GC.start
+    @hash[14] += '5'
+    expect(@hash[14]).to eql 'val5'
   end
 end

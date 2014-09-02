@@ -18,11 +18,6 @@ struct member {
     return NUM2INT(cmpResult) < 0;
   }
 
-  bool operator==(member const& rhs) const {
-    auto equalityVal = rb_funcall(key, hashEqualitySym, 1, rhs.key);
-    return RTEST(equalityVal);
-  }
-
   // also cache as two element array?
   member(VALUE _compareProc, VALUE _key, VALUE _val)
     : compareProc(_compareProc), key(_key), val(_val) {}
@@ -32,11 +27,18 @@ struct member {
   VALUE val;
 };
 
-std::size_t hash_value(member const& member) {
-  // TODO: something better?
-  return reinterpret_cast<std::size_t>(&member);
-  // return NUM2INT(rb_funcall(member.val, hashSym, 0));
-}
+struct CompareVALUEs {
+  bool operator()(VALUE const& lhs, VALUE const& rhs) const {
+    auto equalityVal = rb_funcall(lhs, hashEqualitySym, 1, rhs);
+    return RTEST(equalityVal);
+  }
+};
+
+struct HashVALUE {
+  std::size_t operator()(VALUE const& value) const {
+    return NUM2LL(rb_funcall(value, hashSym, 0));
+  }
+};
 
 namespace mi = boost::multi_index;
 
@@ -44,7 +46,7 @@ struct Hash {
   boost::multi_index_container<
     member,
     mi::indexed_by<
-      mi::hashed_unique< mi::member<member, VALUE, &member::key> >,
+      mi::hashed_unique< mi::member<member, VALUE, &member::key>, HashVALUE, CompareVALUEs>,
       mi::ordered_non_unique< mi::identity<member> >
     >
   > container;
