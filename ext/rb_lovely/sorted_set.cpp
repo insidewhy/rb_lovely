@@ -194,6 +194,12 @@ VALUE setHas(VALUE self, VALUE val) {
   return it == set->end() ? Qfalse : Qtrue;
 }
 
+void markSet(void *voidSet) {
+  Set *set = static_cast<Set *>(voidSet);
+  for (auto& value : *set)
+    rb_gc_mark(value);
+}
+
 } } // end namespace
 
 extern "C" {
@@ -202,7 +208,7 @@ extern "C" {
 
   void Init_rb_lovely_sorted_set() {
     auto rbSet = rb_define_class_under(rbMod, "SortedSet", rb_cObject);
-    rb_define_alloc_func(rbSet, rubyAlloc<Set>);
+    rb_define_alloc_func(rbSet, rubyAlloc<Set, &markSet>);
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
     rb_define_method(rbSet, "initialize", RUBY_METHOD_FUNC(setInitialize), -1);

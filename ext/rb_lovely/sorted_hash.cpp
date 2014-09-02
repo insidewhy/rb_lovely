@@ -226,6 +226,14 @@ VALUE hashHas(VALUE self, VALUE key) {
   return it == hash->container.end() ? Qfalse : Qtrue;
 }
 
+void markHash(void *voidSet) {
+  Hash *hash = static_cast<Hash *>(voidSet);
+  for (auto const& entry : hash->container) {
+    rb_gc_mark(entry.key);
+    rb_gc_mark(entry.val);
+  }
+}
+
 } }
 
 extern "C" {
@@ -234,7 +242,7 @@ extern "C" {
 
   void Init_rb_lovely_hybrid_set() {
     auto rbHash = rb_define_class_under(rbMod, "SortedHash", rb_cObject);
-    rb_define_alloc_func(rbHash, rubyAlloc<Hash>);
+    rb_define_alloc_func(rbHash, rubyAlloc<Hash, markHash>);
     rb_include_module(rbHash, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
     rb_define_method(rbHash, "initialize", RUBY_METHOD_FUNC(hashInitialize), -1);

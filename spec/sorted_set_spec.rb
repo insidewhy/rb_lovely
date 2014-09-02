@@ -118,4 +118,10 @@ describe RbLovely::SortedSet do
     @set.clear
     expect(@set.to_a).to eql []
   end
+
+  it "protects values from garbage collector" do
+    @set << 'val'
+    GC.start
+    puts @set.first
+  end
 end

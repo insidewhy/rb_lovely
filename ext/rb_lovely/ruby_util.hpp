@@ -29,6 +29,12 @@ VALUE rubyAlloc(VALUE klass) {
   return Data_Wrap_Struct(klass, 0, rubyDelete<T>, new T);
 }
 
+typedef void (*MarkFunction)(void *);
+template <class T, MarkFunction M>
+VALUE rubyAlloc(VALUE klass) {
+  return Data_Wrap_Struct(klass, M, rubyDelete<T>, new T);
+}
+
 static void initRubyUtil() {
   rbMod = rb_define_module("RbLovely");
   cmpMethSym = rb_intern("<=>");

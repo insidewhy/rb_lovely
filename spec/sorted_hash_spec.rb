@@ -124,10 +124,15 @@ describe RbLovely::SortedHash do
     expect(@hash.to_a).to eql []
   end
 
-  xit "protects hashed values from garbage collector" do
+  it "protects values from garbage collector" do
     @hash[14] = 'val'
     GC.start
-    @hash[14] += '5'
-    expect(@hash[14]).to eql 'val5'
+    expect(@hash[14]).to eql 'val'
+  end
+
+  it "protects keys from garbage collector" do
+    @hash['apple'] = 'val'
+    GC.start
+    expect(@hash['apple']).to eql 'val'
   end
 end
