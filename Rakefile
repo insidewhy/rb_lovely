@@ -6,7 +6,7 @@ require 'rake/extensiontask'
 
 spec = Gem::Specification.new do |s|
   s.name = project
-  s.version = '0.6.1'
+  s.version = '0.6.2'
   s.authors = ['James Pike']
   s.email   = %w(gems@chilon.net)
   s.homepage = "https://github.com/nuisanceofcats/rb_lovely"
@@ -14,7 +14,7 @@ spec = Gem::Specification.new do |s|
   s.summary = 'Fast sorted sets and hashes.'
   s.description = 'A fast sorted set built using std::set and a fast sorted hash built using boost::multi_index_container.'
   s.platform = Gem::Platform::RUBY
-  s.files = FileList['ext/rb_lovely/*.{cpp,hpp}']
+  s.files = FileList['ext/rb_lovely/*.{cpp,hpp}', 'yard.rb', '.yardopts']
   s.extensions = FileList['ext/**/extconf.rb']
 end
 
