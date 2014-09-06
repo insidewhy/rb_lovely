@@ -1,5 +1,5 @@
-#ifndef RB_LOVELY_SETS_UTIL_HPP
-#define RB_LOVELY_SETS_UTIL_HPP
+#ifndef RB_LOVELY_UTIL_HPP
+#define RB_LOVELY_UTIL_HPP
 #include "ruby.h"
 
 namespace rb_lovely {
