@@ -59,7 +59,7 @@ describe RbLovely::SortedSet do
 
   it "has nice #to_s return value" do
     make_set "the green", "manalishi", "with the two pronged crown"
-    expect(@set.to_s).to eql "RbLovely::SortedSet { manalishi, the green, with the two pronged crown }"
+    expect(@set.to_s).to eql 'RbLovely::SortedSet { "manalishi", "the green", "with the two pronged crown" }'
   end
 
   it "has working last and first methods" do

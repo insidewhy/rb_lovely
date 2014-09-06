@@ -5,9 +5,7 @@
 
 namespace rb_lovely {
 
-// TODO: No more toS, provide inspect instead which is what the containers should be using
-//       for each member.
-auto toS = [](VALUE val) { return RSTRING_PTR(rb_funcall(val, to_sSym, 0)); };
+auto rbInspect = [](VALUE val) { return RSTRING_PTR(rb_funcall(val, inspectSym, 0)); };
 
 }
 #endif

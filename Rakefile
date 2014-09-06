@@ -6,7 +6,7 @@ require 'rake/extensiontask'
 
 spec = Gem::Specification.new do |s|
   s.name = project
-  s.version = '0.6.3'
+  s.version = '0.6.4'
   s.authors = ['James Pike']
   s.email   = %w(gems@chilon.net)
   s.homepage = "https://github.com/nuisanceofcats/rb_lovely"

@@ -5,7 +5,7 @@ namespace rb_lovely {
   VALUE rbMod;
   VALUE cmpMethSym;
   VALUE hashEqualitySym;
-  VALUE to_sSym;
+  VALUE inspectSym;
   VALUE hashSym;
   VALUE compareSym;
   VALUE callSym;

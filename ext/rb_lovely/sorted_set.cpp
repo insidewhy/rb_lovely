@@ -79,9 +79,9 @@ VALUE setToString(VALUE self) {
   Set* set = rubyCast<Set>(self);
   if (! set->empty()) {
     auto it = set->begin();
-    str << ' ' << toS(*it);
+    str << ' ' << rbInspect(*it);
     for (++it; it != set->end(); ++it) {
-      str << ", " << toS(*it);
+      str << ", " << rbInspect(*it);
     }
   }
   str << " }";

@@ -163,9 +163,9 @@ VALUE hashToString(VALUE self) {
   if (! hash->container.empty()) {
     auto& idx = hash->container.get<1>();
     auto it = idx.begin();
-    str << ' ' << toS(it->key) << " => " << toS(it->val);
+    str << ' ' << rbInspect(it->key) << " => " << rbInspect(it->val);
     for (++it; it != idx.end(); ++it) {
-      str << ", " << toS(it->key) << " => " << toS(it->val);
+      str << ", " << rbInspect(it->key) << " => " << rbInspect(it->val);
     }
   }
   str << " }";
