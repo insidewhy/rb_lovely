@@ -60,6 +60,11 @@ VALUE hashLength(VALUE self) {
   return INT2NUM(hash->container.size());
 }
 
+VALUE hashEmpty(VALUE self) {
+  Hash* hash = rubyCast<Hash>(self);
+  return hash->container.empty() ? Qtrue : Qfalse;
+}
+
 VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
   if (argc == 1) {
@@ -255,6 +260,7 @@ extern "C" {
     rb_define_singleton_method(rbHash, "[]", RUBY_METHOD_FUNC(hashFactory), -2);
     rb_define_method(rbHash, "clear", RUBY_METHOD_FUNC(hashClear), 0);
     rb_define_method(rbHash, "length", RUBY_METHOD_FUNC(hashLength), 0);
+    rb_define_method(rbHash, "empty?", RUBY_METHOD_FUNC(hashEmpty), 0);
     rb_define_method(rbHash, "[]=", RUBY_METHOD_FUNC(hashUpdate), 2);
     // like []= but return previous value if there was one
     rb_define_method(rbHash, "replace", RUBY_METHOD_FUNC(hashReplace), 2);

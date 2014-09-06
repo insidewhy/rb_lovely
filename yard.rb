@@ -125,6 +125,14 @@ module RbLovely
     #   set = RbLovely::SortedSet [0, 1, 2, 3]
     #   set.each { |x| puts x }
     def each(&block) ; end
+
+    # Gets the number of elements in the set.
+    # @return [Number] Number of items in set.
+    def length ; end
+
+    # If the set is empty.
+    # @return [Boolean] True only if the set is empty else false.
+    def empty? ; end
   end
 
 
@@ -206,7 +214,7 @@ module RbLovely
     # @example
     #   hash = RbLovely::SortedHash [:a, 10]
     #   hash.clear
-    #   expect(hash.length).to equal 0
+    #   expect(hash.empty?).to equal true
     def clear ; end
 
     # Retrieve value associated with the corresponding key or nil if the key doesn't exist.
@@ -219,13 +227,22 @@ module RbLovely
 
     # Return true if the key is contained in the hash.
     def include?(key) ; end
+    alias :has_key? :include?
 
     # Retrieve first value as determined by value sort order or nil if the hash is empty.
+    # @complexity O(c)
     def first ; end
 
     # Retrieve last value as determined by value sort order or nil if the hash is empty.
+    # @complexity O(c)
     def last ; end
 
-    alias :has_key? :include?
+    # Gets the number of elements in the hash.
+    # @return [Number] Number of items in hash.
+    def length ; end
+
+    # If the hash is empty.
+    # @return [Boolean] True only if the hash is empty else false.
+    def empty? ; end
   end
 end

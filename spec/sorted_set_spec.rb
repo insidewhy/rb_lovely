@@ -16,6 +16,12 @@ describe RbLovely::SortedSet do
     expect(@set.length).to equal 2
   end
 
+  it "has empty?" do
+    expect(@set.empty?).to equal true
+    @set << :a
+    expect(@set.empty?).to equal false
+  end
+
   it "adds items to set in order according to <=> operator and iterates with each" do
     class Item < Struct.new(:num)
       def <=> other

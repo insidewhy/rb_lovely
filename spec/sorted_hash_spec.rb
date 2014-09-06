@@ -16,6 +16,12 @@ describe RbLovely::SortedHash do
     expect(@hash.length).to equal 2
   end
 
+  it "has empty?" do
+    expect(@hash.empty?).to equal true
+    @hash[:a] = 1
+    expect(@hash.empty?).to equal false
+  end
+
   it "constructs from array" do
     expect { @hash = RbLovely::SortedHash.new("string should be array") }.to raise_error
     make_hash 9, 5, 4, 5, 14, 1

@@ -52,6 +52,11 @@ VALUE setLength(VALUE self) {
   return INT2NUM(set->size());
 }
 
+VALUE setEmpty(VALUE self) {
+  Set* set = rubyCast<Set>(self);
+  return set->empty() ? Qtrue : Qfalse;
+}
+
 VALUE setAdd(VALUE self, VALUE val) {
   Set* set = rubyCast<Set>(self);
   set->insert(val);
@@ -221,6 +226,7 @@ extern "C" {
     rb_define_singleton_method(rbSet, "[]", RUBY_METHOD_FUNC(setFactory), -2);
     rb_define_method(rbSet, "clear", RUBY_METHOD_FUNC(setClear), 0);
     rb_define_method(rbSet, "length", RUBY_METHOD_FUNC(setLength), 0);
+    rb_define_method(rbSet, "empty?", RUBY_METHOD_FUNC(setEmpty), 0);
     rb_define_method(rbSet, "add", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "<<", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);
