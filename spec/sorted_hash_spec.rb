@@ -89,19 +89,31 @@ describe RbLovely::SortedHash do
     make_hash :h, 3, :i, 1, :b, 7
     expect(@hash.delete :h).to equal 3
     expect(@hash.delete :y).to equal nil
-    expect(@hash.to_a).to eql [[:i, 1], [:b,7]]
+    expect(@hash.to_a).to eql [[:i, 1], [:b, 7]]
   end
 
   it "has working pop" do
     make_hash :e, 1, :c, 2
-    expect(@hash.pop).to equal 2
-    expect(@hash.to_a).to eql [[:e,1]]
+    expect(@hash.pop).to eql [:c, 2]
+    expect(@hash.to_a).to eql [[:e, 1]]
   end
 
   it "has working shift" do
     make_hash :e, 1, :c, 2
-    expect(@hash.shift).to equal 1
-    expect(@hash.to_a).to eql [[:c,2]]
+    expect(@hash.shift).to eql [:e, 1]
+    expect(@hash.to_a).to eql [[:c, 2]]
+  end
+
+  it "has working pop_value" do
+    make_hash :e, 1, :c, 2
+    expect(@hash.pop_value).to equal 2
+    expect(@hash.to_a).to eql [[:e, 1]]
+  end
+
+  it "has working shift_value" do
+    make_hash :e, 1, :c, 2
+    expect(@hash.shift_value).to equal 1
+    expect(@hash.to_a).to eql [[:c, 2]]
   end
 
   it "has working include? and has_key?" do

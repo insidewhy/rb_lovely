@@ -234,12 +234,40 @@ VALUE hashShift(VALUE self) {
    return Qnil;
 
   auto& idx = hash->container.get<1>();
+  auto keyBak = idx.begin()->key;
+  auto valBak = idx.begin()->val;
+  idx.erase(idx.begin());
+
+  return rb_ary_new3(2, keyBak, valBak);
+}
+
+VALUE hashPop(VALUE self) {
+  Hash* hash = rubyCast<Hash>(self);
+  if (hash->container.empty())
+   return Qnil;
+
+  auto& idx = hash->container.get<1>();
+  auto last = idx.end();
+  --last;
+  auto keyBak = last->key;
+  auto valBak = last->val;
+  idx.erase(last);
+
+  return rb_ary_new3(2, keyBak, valBak);
+}
+
+VALUE hashShiftValue(VALUE self) {
+  Hash* hash = rubyCast<Hash>(self);
+  if (hash->container.empty())
+   return Qnil;
+
+  auto& idx = hash->container.get<1>();
   auto bak = idx.begin()->val;
   idx.erase(idx.begin());
   return bak;
 }
 
-VALUE hashPop(VALUE self) {
+VALUE hashPopValue(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
   if (hash->container.empty())
     return Qnil;
@@ -298,6 +326,8 @@ extern "C" {
     // rb_define_method(rbHash, "select!", RUBY_METHOD_FUNC(hashMutatingSelect), 0);
     rb_define_method(rbHash, "shift", RUBY_METHOD_FUNC(hashShift), 0);
     rb_define_method(rbHash, "pop", RUBY_METHOD_FUNC(hashPop), 0);
+    rb_define_method(rbHash, "shift_value", RUBY_METHOD_FUNC(hashShiftValue), 0);
+    rb_define_method(rbHash, "pop_value", RUBY_METHOD_FUNC(hashPopValue), 0);
     // Enumerable would test both key and value for include?
     rb_define_method(rbHash, "include?", RUBY_METHOD_FUNC(hashHas), 1);
     rb_define_method(rbHash, "has_key?", RUBY_METHOD_FUNC(hashHas), 1);
