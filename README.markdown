@@ -12,6 +12,7 @@ An ordered set with no duplicates. Do not modify while iterating.
 
 ### Adding elements
 Compares elements using <=> methods to order elements, adding elements has complexity O(log(n)).
+
 ```ruby
 class Person < Struct.new(:name, :age)
   def <=> other
@@ -36,6 +37,7 @@ expect(set.length).to equal 5
 ### Removing elements
 
 Deletes first element for which: (argument <=> element) == 0. Complexity: O(log(n)).
+
 ```ruby
 set = RbLovely::SortedSet.new [ 1, 5, 3 ]
 set.delete 3
@@ -45,6 +47,7 @@ set.clear # remove all elements
 
 ### Access to first and last elements
 Complexity: O(c)
+
 ```ruby
 set = RbLovely::SortedSet.new [4, 0, 2]
 expect(set.first).to equal 0
@@ -53,6 +56,7 @@ expect(set.last).to equal 4
 
 ### Filtering
 Complexity: O(n).
+
 ```ruby
 set = RbLovely::SortedSet.new [0, 1, 2, 9]
 set.reject!(&:odd?)
@@ -74,6 +78,7 @@ set.reject { |num| num < 15 }
 
 ### Removing first and last elements
 Complexity: O(c)
+
 ```ruby
 set = RbLovely::SortedSet.new [5, 2, 3]
 set.pop
@@ -121,6 +126,7 @@ hash.each { |key, value| do_stuff(key, value) }
 
 ### Retrieving elements
 Complexity: O(c)
+
 ```ruby
 hash = RbLovely::SortedHash.new [20, 5, 9, 1, 2, 16]
 expect(hash[20]).to equal(5)
@@ -132,6 +138,7 @@ expect(hash.last).to equal 16  # highest value
 
 ### Removing elements
 Complexity: O(c)
+
 ```ruby
 hash = RbLovely::SortedHash.new [9, 2, 3, 4]
 expect(hash.delete 9).to equal 2

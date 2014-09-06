@@ -133,6 +133,7 @@ describe RbLovely::SortedHash do
   it "protects keys from garbage collector" do
     @hash['apple'] = 'val'
     GC.start
+    # TODO: this is not a valid test as it doesn't access the existing key value
     expect(@hash['apple']).to eql 'val'
   end
 end

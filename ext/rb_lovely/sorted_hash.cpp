@@ -183,7 +183,7 @@ VALUE hashLast(VALUE self) {
   return last->val;
 }
 
-VALUE hashMutatingDelete(VALUE self, VALUE toDelete) {
+VALUE hashDelete(VALUE self, VALUE toDelete) {
   Hash* hash = rubyCast<Hash>(self);
   auto it = hash->container.find(toDelete);
   if (it == hash->container.end()) {
@@ -256,7 +256,7 @@ extern "C" {
     rb_define_method(rbHash, "to_s", RUBY_METHOD_FUNC(hashToString), 0);
     rb_define_method(rbHash, "first", RUBY_METHOD_FUNC(hashFirst), 0);
     rb_define_method(rbHash, "last", RUBY_METHOD_FUNC(hashLast), 0);
-    rb_define_method(rbHash, "delete", RUBY_METHOD_FUNC(hashMutatingDelete), 1);
+    rb_define_method(rbHash, "delete", RUBY_METHOD_FUNC(hashDelete), 1);
     // rb_define_method(rbHash, "reject!", RUBY_METHOD_FUNC(hashMutatingReject), 0);
     // rb_define_method(rbHash, "reject_first!", RUBY_METHOD_FUNC(hashMutatingRejectFirst), 0);
     // rb_define_method(rbHash, "select!", RUBY_METHOD_FUNC(hashMutatingSelect), 0);
