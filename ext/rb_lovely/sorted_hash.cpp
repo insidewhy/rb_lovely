@@ -181,10 +181,31 @@ VALUE hashToString(VALUE self) {
 
 VALUE hashFirst(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
-  return hash->container.empty() ? Qnil : hash->container.get<1>().begin()->val;
+  if (hash->container.empty()) {
+    return Qnil;
+  }
+
+  auto &pair = *hash->container.get<1>().begin();
+  return rb_ary_new3(2, pair.key, pair.val);
 }
 
 VALUE hashLast(VALUE self) {
+  Hash* hash = rubyCast<Hash>(self);
+  if (hash->container.empty()) {
+    return Qnil;
+  }
+
+  auto it = hash->container.get<1>().end();
+  --it;
+  return rb_ary_new3(2, it->key, it->val);
+}
+
+VALUE hashFirstValue(VALUE self) {
+  Hash* hash = rubyCast<Hash>(self);
+  return hash->container.empty() ? Qnil : hash->container.get<1>().begin()->val;
+}
+
+VALUE hashLastValue(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
   if (hash->container.empty())
     return Qnil;
@@ -269,6 +290,8 @@ extern "C" {
     rb_define_method(rbHash, "to_s", RUBY_METHOD_FUNC(hashToString), 0);
     rb_define_method(rbHash, "first", RUBY_METHOD_FUNC(hashFirst), 0);
     rb_define_method(rbHash, "last", RUBY_METHOD_FUNC(hashLast), 0);
+    rb_define_method(rbHash, "first_value", RUBY_METHOD_FUNC(hashFirstValue), 0);
+    rb_define_method(rbHash, "last_value", RUBY_METHOD_FUNC(hashLastValue), 0);
     rb_define_method(rbHash, "delete", RUBY_METHOD_FUNC(hashDelete), 1);
     // rb_define_method(rbHash, "reject!", RUBY_METHOD_FUNC(hashMutatingReject), 0);
     // rb_define_method(rbHash, "reject_first!", RUBY_METHOD_FUNC(hashMutatingRejectFirst), 0);

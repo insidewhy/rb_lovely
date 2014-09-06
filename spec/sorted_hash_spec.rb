@@ -69,12 +69,20 @@ describe RbLovely::SortedHash do
     expect(@hash.to_s).to eql "RbLovely::SortedHash { :e => 2, :b => 5 }"
   end
 
-  it "has working last and first methods" do
+  it "has working first_value and last_value methods" do
+    expect(@hash.first_value).to eql nil
+    expect(@hash.last_value).to eql nil
+    make_hash 2, "a", 1, "z", 2000, "b"
+    expect(@hash.first_value).to eql "a"
+    expect(@hash.last_value).to eql "z"
+  end
+
+  it "has working first and last methods" do
     expect(@hash.first).to eql nil
     expect(@hash.last).to eql nil
-    make_hash 2, "a", 1, "z", 2000, "b"
-    expect(@hash.first).to eql "a"
-    expect(@hash.last).to eql "z"
+    make_hash :b, 5, :e, 2
+    expect(@hash.first).to eql [:e, 2]
+    expect(@hash.last).to eql [:b, 5]
   end
 
   it "has working delete" do

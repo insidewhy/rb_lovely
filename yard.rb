@@ -242,13 +242,33 @@ module RbLovely
     alias :has_key? :include?
     alias :key? :include?
 
-    # Retrieve first value as determined by value sort order or nil if the hash is empty.
+    # Retrieve first key-value pair as determined by value sort order or nil if the hash is empty.
     # @complexity O(c)
+    # @example
+    #   @set = RbLovely::SortedHash [:a, 2, :b, 1]
+    #   expect(@set.first).to equal [:b, 1]
     def first ; end
+
+    # Retrieve first_value value as determined by value sort order or nil if the hash is empty.
+    # @complexity O(c)
+    # @example
+    #   @set = RbLovely::SortedHash [:a, 2, :b, 1]
+    #   expect(@set.first_value).to equal 1
+    def first_value ; end
+
+    # Retrieve last key-value pair as determined by value sort order or nil if the hash is empty.
+    # @complexity O(c)
+    # @example
+    #   @set = RbLovely::SortedHash [:a, 2, :b, 1]
+    #   expect(@set.last).to equal [:a, 2]
+    def last ; end
 
     # Retrieve last value as determined by value sort order or nil if the hash is empty.
     # @complexity O(c)
-    def last ; end
+    # @example
+    #   @set = RbLovely::SortedHash [:a, 2, :b, 1]
+    #   expect(@set.last_value).to equal 2
+    def last_value ; end
 
     # Remove the first value in the hash and return it or return nil if the hash is empty.
     # @complexity O(c).
