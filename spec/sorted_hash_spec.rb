@@ -102,7 +102,7 @@ describe RbLovely::SortedHash do
     make_hash 5, 1, 3, 2
     expect(@hash.include? 5).to equal true
     expect(@hash.has_key? 3).to equal true
-    expect(@hash.has_key? 6).to equal false
+    expect(@hash.key? 6).to equal false
   end
 
   it "can use custom sorting function" do

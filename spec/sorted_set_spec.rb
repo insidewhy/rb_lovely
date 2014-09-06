@@ -36,8 +36,8 @@ describe RbLovely::SortedSet do
 
   it "constructs from array" do
     expect { @set = RbLovely::SortedSet.new("string should be array") }.to raise_error
-    make_set 9, 5, 4, 5
-    expect(@set.to_a).to eql [4, 5, 9]
+    make_set :a, :b, :c, :b
+    expect(@set.to_a).to eql [:a, :b, :c]
   end
 
   it "has working constructor shortcut" do

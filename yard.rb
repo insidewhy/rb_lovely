@@ -68,14 +68,6 @@ module RbLovely
     #   expect(set.first).to equal 0
     def first ; end
 
-    # Remove the first element from the set.
-    # @complexity O(c).
-    # @return The first value according to the <=> method defined on each member or nil if the set is empty.
-    # @example
-    #   set = RbLovely::SortedSet [4, 0, 2]
-    #   expect(set.shift).to equal 0
-    def shift ; end
-
     # Access the last element in the set.
     # @complexity O(c).
     # @return The last value according to the <=> method defined on each member.
@@ -84,7 +76,17 @@ module RbLovely
     #   expect(set.last).to equal 4
     def last ; end
 
+    # Remove the first element from the set.
+    # @see #pop
+    # @complexity O(c).
+    # @return The first value according to the <=> method defined on each member or nil if the set is empty.
+    # @example
+    #   set = RbLovely::SortedSet [4, 0, 2]
+    #   expect(set.shift).to equal 0
+    def shift ; end
+
     # Remove the last element from the set.
+    # @see #shift
     # @complexity O(c).
     # @return The last value according to the <=> method defined on each member or nil if the set is empty.
     # @example
@@ -228,6 +230,7 @@ module RbLovely
     # Return true if the key is contained in the hash.
     def include?(key) ; end
     alias :has_key? :include?
+    alias :key? :include?
 
     # Retrieve first value as determined by value sort order or nil if the hash is empty.
     # @complexity O(c)
@@ -236,6 +239,24 @@ module RbLovely
     # Retrieve last value as determined by value sort order or nil if the hash is empty.
     # @complexity O(c)
     def last ; end
+
+    # Remove the first value in the hash and return it or return nil if the hash is empty.
+    # @complexity O(c).
+    # @see #pop
+    # @return The first value according to the <=> method defined on each member or nil if the hash is empty.
+    # @example
+    #   set = RbLovely::SortedHash [:a, 2, :b, 10]
+    #   expect(hash.shift).to equal 2
+    def shift ; end
+
+    # Remove the last value in the hash and return it or return nil if the hash is empty.
+    # @complexity O(c).
+    # @see #shift
+    # @return The last value according to the <=> method defined on each member or nil if the hash is empty.
+    # @example
+    #   set = RbLovely::SortedHash [:a, 2, :b, 10]
+    #   expect(hash.pop).to equal 10
+    def pop ; end
 
     # Gets the number of elements in the hash.
     # @return [Number] Number of items in hash.
