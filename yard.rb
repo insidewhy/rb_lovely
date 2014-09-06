@@ -132,7 +132,7 @@ module RbLovely
     # @return [Number] Number of items in set.
     def length ; end
 
-    # If the set is empty.
+    # Return true if the set is empty.
     # @return [Boolean] True only if the set is empty else false.
     def empty? ; end
   end
@@ -262,7 +262,7 @@ module RbLovely
     # @return [Number] Number of items in hash.
     def length ; end
 
-    # If the hash is empty.
+    # Return true if the hash is empty.
     # @return [Boolean] True only if the hash is empty else false.
     def empty? ; end
   end
