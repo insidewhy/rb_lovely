@@ -7,7 +7,6 @@ namespace rb_lovely {
 extern VALUE rbMod;
 extern VALUE cmpMethSym;
 extern VALUE hashEqualitySym;
-extern VALUE inspectSym;
 extern VALUE hashSym;
 extern VALUE callSym;
 extern VALUE compareSym;
@@ -39,7 +38,6 @@ static void initRubyUtil() {
   rbMod = rb_define_module("RbLovely");
   cmpMethSym = rb_intern("<=>");
   hashEqualitySym = rb_intern("eql?");
-  inspectSym = rb_intern("inspect");
   hashSym = rb_intern("hash");
   callSym = rb_intern("call");
   compareSym = ID2SYM(rb_intern("compare"));

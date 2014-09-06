@@ -5,7 +5,7 @@
 
 namespace rb_lovely {
 
-auto rbInspect = [](VALUE val) { return RSTRING_PTR(rb_funcall(val, inspectSym, 0)); };
+auto rbInspect = [](VALUE val) { return RSTRING_PTR(rb_inspect(val)); };
 
 }
 #endif
