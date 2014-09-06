@@ -113,7 +113,7 @@ VALUE hashUpdate(VALUE self, VALUE key, VALUE val) {
     hash->container.replace(it, member(hash->compareProc, key, val));
   else
     hash->container.insert(member(hash->compareProc, key, val));
-  return self;
+  return val;
 }
 
 VALUE hashReplace(VALUE self, VALUE key, VALUE val) {

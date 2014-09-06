@@ -10,9 +10,9 @@ describe RbLovely::SortedHash do
   end
 
   it "can add elements to hash" do
-    @hash[15] = 9
+    expect(@hash[15] = 9).to equal 9
     expect(@hash.length).to equal 1
-    @hash[19] = 2
+    expect(@hash[19] = 2).to equal 2
     expect(@hash.length).to equal 2
   end
 

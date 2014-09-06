@@ -171,6 +171,21 @@ module RbLovely
     #   expect(hash.to_a).to eql [[:b, 1], [:a, 3]]
     def self.[](*content) ; end
 
+    # Set the value associated with a key. If the key already then it and its value are removed.
+    # @return The value that was passed.
+    # @example
+    #   hash = RbLovely::SortedHash.new
+    #   hash[:a] = 'yo'
+    def []=(key, value) ; end
+
+    # Set the value associated with a key. If the key already then it and its value are removed.
+    # @return The value that was previously associated with the key or nil if the key was not present in the hash.
+    # @example
+    #   hash = RbLovely::SortedHash[:a, 'yi']
+    #   expect(hash.replace(:a, 'yo')).to eql('yi')
+    #   expect(hash.replace(:b, 'hm')).to eql(nil)
+    def replace(key, value) ; end
+
     # Delete the value associated with a key.
     # @return The value associated with the deleted key or nil if the key was not in the hash.
     # @example
