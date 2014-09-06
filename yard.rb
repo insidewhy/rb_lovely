@@ -22,7 +22,7 @@ module RbLovely
   #
   #   empty_set = RbLovely::SortedSet.new
   #
-  #   set = RbLovely::SortedSet [ Person.new('Nyamuk', 2), Person.new('Cold Rain', 9999) ]
+  #   set = RbLovely::SortedSet [Person.new('Nyamuk', 2), Person.new('Cold Rain', 9999)]
   #   set.add Person.new('Beards', 15)
   #   set << Person.new('Anna', 12)
   #   set.add Person.new('Moust', 18)
@@ -57,7 +57,7 @@ module RbLovely
     # @return The value that was removed or nil if no value was removed.
     # @param value Value to remove (each member is compared to value using the <=> method).
     # @example
-    #   set = RbLovely::SortedSet [ 1, 5, 3 ]
+    #   set = RbLovely::SortedSet [1, 5, 3]
     #   set.delete 3
     #   expect(set.to_a).to eql [1, 5]
     def delete value ; end
