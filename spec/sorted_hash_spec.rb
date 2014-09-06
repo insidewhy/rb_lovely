@@ -22,6 +22,11 @@ describe RbLovely::SortedHash do
     expect(@hash.to_a).to eql [[14, 1], [9, 5], [4, 5]]
   end
 
+  it "has working constructor shortcut" do
+    @hash = RbLovely::SortedHash[:a, 3, :b, 1]
+    expect(@hash.to_a).to eql [[:b, 1], [:a, 3]]
+  end
+
   it "iterates in value order according to <=> operator" do
     make_hash 2, 14, 3, 1, 4, 99
     expect { |b| @hash.each(&b) }.to yield_successive_args([3, 1], [2, 14], [4, 99])

@@ -94,6 +94,12 @@ VALUE hashInitialize(int argc, VALUE *argv, VALUE self) {
   return self;
 }
 
+VALUE hashFactory(VALUE clss, VALUE args) {
+  auto obj = rb_obj_alloc(clss);
+  rb_obj_call_init(obj, 1, &args);
+  return obj;
+}
+
 VALUE hashClear(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
   hash->container.clear();
@@ -246,6 +252,7 @@ extern "C" {
     rb_include_module(rbHash, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
     rb_define_method(rbHash, "initialize", RUBY_METHOD_FUNC(hashInitialize), -1);
+    rb_define_singleton_method(rbHash, "[]", RUBY_METHOD_FUNC(hashFactory), -2);
     rb_define_method(rbHash, "clear", RUBY_METHOD_FUNC(hashClear), 0);
     rb_define_method(rbHash, "length", RUBY_METHOD_FUNC(hashLength), 0);
     rb_define_method(rbHash, "[]=", RUBY_METHOD_FUNC(hashUpdate), 2);

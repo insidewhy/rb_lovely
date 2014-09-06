@@ -34,6 +34,11 @@ describe RbLovely::SortedSet do
     expect(@set.to_a).to eql [4, 5, 9]
   end
 
+  it "has working constructor shortcut" do
+    @set = RbLovely::SortedSet[3,1,2]
+    expect(@set.to_a).to eql [1,2,3]
+  end
+
   it "does not add duplicates" do
     class NamedItem < Struct.new(:name, :num)
       def <=> other

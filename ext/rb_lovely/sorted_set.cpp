@@ -35,6 +35,12 @@ VALUE setInitialize(int argc, VALUE *argv, VALUE self) {
   return self;
 }
 
+VALUE setFactory(VALUE clss, VALUE args) {
+  auto obj = rb_obj_alloc(clss);
+  rb_obj_call_init(obj, 1, &args);
+  return obj;
+}
+
 VALUE setClear(VALUE self) {
   Set* set = rubyCast<Set>(self);
   set->clear();
@@ -212,6 +218,7 @@ extern "C" {
     rb_include_module(rbSet, rb_const_get(rb_cObject, rb_intern("Enumerable")));
 
     rb_define_method(rbSet, "initialize", RUBY_METHOD_FUNC(setInitialize), -1);
+    rb_define_singleton_method(rbSet, "[]", RUBY_METHOD_FUNC(setFactory), -2);
     rb_define_method(rbSet, "clear", RUBY_METHOD_FUNC(setClear), 0);
     rb_define_method(rbSet, "length", RUBY_METHOD_FUNC(setLength), 0);
     rb_define_method(rbSet, "add", RUBY_METHOD_FUNC(setAdd), 1);
