@@ -37,12 +37,14 @@ module RbLovely
     include Enumerable
 
     # @param content [Array] An array of values to insert into the set.
+    # @complexity O(n).
     # @example
     #   set = RbLovely::SortedSet.new [3,1,2]
     #   expect(set.to_a).to eql [1,2,3]
     def initialize content = [] ; end
 
     # Factory method for creating sorted set from array.
+    # @complexity O(n).
     # @param content [Array] An array of values to insert into the created set.
     # @return [SortedSet] New sorted set instance.
     # @example
@@ -77,8 +79,8 @@ module RbLovely
     def last ; end
 
     # Remove the first element from the set.
-    # @see #pop
     # @complexity O(c).
+    # @see #pop
     # @return The first value according to the <=> method defined on each member or nil if the set is empty.
     # @example
     #   set = RbLovely::SortedSet [4, 0, 2]
@@ -86,8 +88,8 @@ module RbLovely
     def shift ; end
 
     # Remove the last element from the set.
-    # @see #shift
     # @complexity O(c).
+    # @see #shift
     # @return The last value according to the <=> method defined on each member or nil if the set is empty.
     # @example
     #   set = RbLovely::SortedSet [4, 0, 2]
@@ -129,10 +131,12 @@ module RbLovely
     def each(&block) ; end
 
     # Gets the number of elements in the set.
+    # @complexity O(c).
     # @return [Number] Number of items in set.
     def length ; end
 
     # Return true if the set is empty.
+    # @complexity O(c).
     # @return [Boolean] True only if the set is empty else false.
     def empty? ; end
   end
@@ -158,6 +162,7 @@ module RbLovely
   class SortedHash
     include Enumerable
 
+    # @complexity O(n).
     # @param content [Array] An array containing key, value, key, value ...
     # @param compare [Proc] Comparison function used to order values (rather than default
     #                       of using <=> method).
@@ -174,6 +179,7 @@ module RbLovely
     def initialize content = [], compare: nil ; end
 
     # Factory method for creating sorted hash from array.
+    # @complexity O(n).
     # @param content [Array] An array of values to insert into the created hash.
     # @return [SortedHash] New sorted set instance.
     # @example
@@ -182,6 +188,7 @@ module RbLovely
     def self.[](*content) ; end
 
     # Set the value associated with a key. If the key already then it and its value are removed.
+    # @complexity O(c).
     # @return The value that was passed.
     # @example
     #   hash = RbLovely::SortedHash.new
@@ -197,6 +204,7 @@ module RbLovely
     def replace(key, value) ; end
 
     # Delete the value associated with a key.
+    # @complexity O(c)
     # @return The value associated with the deleted key or nil if the key was not in the hash.
     # @example
     #   hash = RbLovely::SortedHash [:a, 5 ]
@@ -213,6 +221,7 @@ module RbLovely
     def each(&block) ; end
 
     # Remove all values from the hash.
+    # @complexity O(n)
     # @example
     #   hash = RbLovely::SortedHash [:a, 10]
     #   hash.clear
@@ -228,6 +237,7 @@ module RbLovely
     def [](key) ; end
 
     # Return true if the key is contained in the hash.
+    # @complexity O(c)
     def include?(key) ; end
     alias :has_key? :include?
     alias :key? :include?
@@ -259,10 +269,12 @@ module RbLovely
     def pop ; end
 
     # Gets the number of elements in the hash.
+    # @complexity O(c).
     # @return [Number] Number of items in hash.
     def length ; end
 
     # Return true if the hash is empty.
+    # @complexity O(c).
     # @return [Boolean] True only if the hash is empty else false.
     def empty? ; end
   end
