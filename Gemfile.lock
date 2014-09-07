@@ -9,4 +9,4 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  rake-compiler
+  rake-compiler (~> 0.9.3)

@@ -309,6 +309,7 @@ extern "C" {
     rb_define_method(rbHash, "[]", RUBY_METHOD_FUNC(hashGet), 1);
     rb_define_method(rbHash, "each", RUBY_METHOD_FUNC(hashEach), 0);
     rb_define_method(rbHash, "to_s", RUBY_METHOD_FUNC(hashToString), 0);
+    rb_define_method(rbHash, "inspect", RUBY_METHOD_FUNC(hashToString), 0);
     rb_define_method(rbHash, "first", RUBY_METHOD_FUNC(hashFirst<ValueOrKey::BOTH>), 0);
     rb_define_method(rbHash, "first_value", RUBY_METHOD_FUNC(hashFirst<ValueOrKey::VALUE>), 0);
     rb_define_method(rbHash, "first_key", RUBY_METHOD_FUNC(hashFirst<ValueOrKey::KEY>), 0);

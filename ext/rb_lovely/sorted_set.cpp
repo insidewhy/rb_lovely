@@ -231,6 +231,7 @@ extern "C" {
     rb_define_method(rbSet, "<<", RUBY_METHOD_FUNC(setAdd), 1);
     rb_define_method(rbSet, "each", RUBY_METHOD_FUNC(setEach), 0);
     rb_define_method(rbSet, "to_s", RUBY_METHOD_FUNC(setToString), 0);
+    rb_define_method(rbSet, "inspect", RUBY_METHOD_FUNC(setToString), 0);
     rb_define_method(rbSet, "first", RUBY_METHOD_FUNC(setFirst), 0);
     rb_define_method(rbSet, "last", RUBY_METHOD_FUNC(setLast), 0);
     rb_define_method(rbSet, "delete", RUBY_METHOD_FUNC(setMutatingDelete), 1);
