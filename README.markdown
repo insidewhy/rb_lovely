@@ -8,4 +8,6 @@ Fast containers with good tests.
 
 Full documentation can be found at [rubydoc.info](http://rubydoc.info/gems/rb_lovely).
 
+[![Gem Version](https://badge.fury.io/rb/rb_lovely.svg)](http://badge.fury.io/rb/rb_lovely)
+
 [LOVELY!!!](http://youtu.be/c0kbw8emlF4).
