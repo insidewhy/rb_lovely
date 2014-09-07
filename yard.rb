@@ -248,16 +248,24 @@ module RbLovely
     # @complexity O(c)
     # @example
     #   @set = RbLovely::SortedHash [:a, 2, :b, 1]
-    #   expect(@set.first).to equal [:b, 1]
+    #   expect(@set.first).to eql [:b, 1]
     def first ; end
 
-    # Retrieve first_value value as determined by value sort order or nil if the hash is empty.
+    # Retrieve first value as determined by value sort order or nil if the hash is empty.
     # @complexity O(c)
     # @return [Array] The first key-value pair in the hash.
     # @example
     #   @set = RbLovely::SortedHash [:a, 2, :b, 1]
     #   expect(@set.first_value).to equal 1
     def first_value ; end
+
+    # Retrieve first key as determined by value sort order or nil if the hash is empty.
+    # @complexity O(c)
+    # @return The first key in the hash
+    # @example
+    #   @set = RbLovely::SortedHash [:a, 1, :b, 2]
+    #   expect(@set.first_value).to equal :a
+    def first_key ; end
 
     # Retrieve last key-value pair as determined by value sort order or nil if the hash is empty.
     # @complexity O(c)
@@ -274,6 +282,13 @@ module RbLovely
     #   expect(@set.last_value).to equal 2
     def last_value ; end
 
+    # Retrieve last key as determined by value sort order or nil if the hash is empty.
+    # @complexity O(c)
+    # @example
+    #   @set = RbLovely::SortedHash [:a, 1, :b, 2]
+    #   expect(@set.last_key).to equal :b
+    def last_key ; end
+
     # Remove the first key-value pair in the hash and return it or return nil if the hash is empty.
     # @complexity O(c).
     # @see #pop
@@ -283,6 +298,24 @@ module RbLovely
     #   expect(hash.shift).to equal [:a, 2]
     def shift ; end
 
+    # Remove the first key-value pair in the hash and return the key or return nil if the hash is empty.
+    # @complexity O(c).
+    # @see #pop_key
+    # @return The first key pair according to the <=> method defined on each member or nil if the hash is empty.
+    # @example
+    #   set = RbLovely::SortedHash [:a, 2, :b, 10]
+    #   expect(hash.shift_key).to equal :a
+    def shift_key ; end
+
+    # Remove the first key-value pair in the hash and return the value or return nil if the hash is empty.
+    # @complexity O(c).
+    # @see #pop_value
+    # @return The first key pair according to the <=> method defined on each member or nil if the hash is empty.
+    # @example
+    #   set = RbLovely::SortedHash [:a, 2, :b, 10]
+    #   expect(hash.shift_value).to equal 2
+    def shift_value ; end
+
     # Remove the last key-value pair in the hash and return it or return nil if the hash is empty.
     # @complexity O(c).
     # @see #shift
@@ -291,6 +324,24 @@ module RbLovely
     #   set = RbLovely::SortedHash [:a, 2, :b, 10]
     #   expect(hash.pop).to equal [:b, 10]
     def pop ; end
+
+    # Remove the last key-value pair in the hash and return the key or return nil if the hash is empty.
+    # @complexity O(c).
+    # @see #shift_key
+    # @return The last key according to the <=> method defined on each member or nil if the hash is empty.
+    # @example
+    #   set = RbLovely::SortedHash [:a, 2, :b, 10]
+    #   expect(hash.pop_key).to equal :b
+    def pop_key ; end
+
+    # Remove the last key-value pair in the hash and return the value or return nil if the hash is empty.
+    # @complexity O(c).
+    # @see #shift_value
+    # @return The last key according to the <=> method defined on each member or nil if the hash is empty.
+    # @example
+    #   set = RbLovely::SortedHash [:a, 2, :b, 10]
+    #   expect(hash.pop_value).to equal 10
+    def pop_value ; end
 
     # Remove the first key-value pair in the hash and return it or return nil if the hash is empty.
     # @complexity O(c).

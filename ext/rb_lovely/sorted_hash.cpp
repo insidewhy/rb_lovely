@@ -228,19 +228,31 @@ VALUE hashDelete(VALUE self, VALUE toDelete) {
   }
 }
 
+enum class ValueOrKey { VALUE, KEY, BOTH };
+
+template <ValueOrKey V>
 VALUE hashShift(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
   if (hash->container.empty())
    return Qnil;
 
   auto& idx = hash->container.get<1>();
-  auto keyBak = idx.begin()->key;
-  auto valBak = idx.begin()->val;
-  idx.erase(idx.begin());
+  auto first = idx.begin();
+  if (V == ValueOrKey::BOTH) {
+    auto keyBak = first->key;
+    auto valBak = first->val;
+    idx.erase(first);
 
-  return rb_ary_new3(2, keyBak, valBak);
+    return rb_ary_new3(2, keyBak, valBak);
+  }
+  else {
+    auto bak = V == ValueOrKey::VALUE ? first->val : first->key;
+    idx.erase(first);
+    return bak;
+  }
 }
 
+template <ValueOrKey V>
 VALUE hashPop(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
   if (hash->container.empty())
@@ -249,35 +261,18 @@ VALUE hashPop(VALUE self) {
   auto& idx = hash->container.get<1>();
   auto last = idx.end();
   --last;
-  auto keyBak = last->key;
-  auto valBak = last->val;
-  idx.erase(last);
 
-  return rb_ary_new3(2, keyBak, valBak);
-}
-
-VALUE hashShiftValue(VALUE self) {
-  Hash* hash = rubyCast<Hash>(self);
-  if (hash->container.empty())
-   return Qnil;
-
-  auto& idx = hash->container.get<1>();
-  auto bak = idx.begin()->val;
-  idx.erase(idx.begin());
-  return bak;
-}
-
-VALUE hashPopValue(VALUE self) {
-  Hash* hash = rubyCast<Hash>(self);
-  if (hash->container.empty())
-    return Qnil;
-
-  auto& idx = hash->container.get<1>();
-  auto last = idx.end();
-  --last;
-  auto bak = last->val;
-  idx.erase(last);
-  return bak;
+  if (V == ValueOrKey::BOTH) {
+    auto keyBak = last->key;
+    auto valBak = last->val;
+    idx.erase(last);
+    return rb_ary_new3(2, keyBak, valBak);
+  }
+  else {
+    auto bak = V == ValueOrKey::VALUE ? last->val : last->key;
+    idx.erase(last);
+    return bak;
+  }
 }
 
 VALUE hashHas(VALUE self, VALUE key) {
@@ -324,10 +319,12 @@ extern "C" {
     // rb_define_method(rbHash, "reject!", RUBY_METHOD_FUNC(hashMutatingReject), 0);
     // rb_define_method(rbHash, "reject_first!", RUBY_METHOD_FUNC(hashMutatingRejectFirst), 0);
     // rb_define_method(rbHash, "select!", RUBY_METHOD_FUNC(hashMutatingSelect), 0);
-    rb_define_method(rbHash, "shift", RUBY_METHOD_FUNC(hashShift), 0);
-    rb_define_method(rbHash, "pop", RUBY_METHOD_FUNC(hashPop), 0);
-    rb_define_method(rbHash, "shift_value", RUBY_METHOD_FUNC(hashShiftValue), 0);
-    rb_define_method(rbHash, "pop_value", RUBY_METHOD_FUNC(hashPopValue), 0);
+    rb_define_method(rbHash, "shift", RUBY_METHOD_FUNC(hashShift<ValueOrKey::BOTH>), 0);
+    rb_define_method(rbHash, "shift_value", RUBY_METHOD_FUNC(hashShift<ValueOrKey::VALUE>), 0);
+    rb_define_method(rbHash, "shift_key", RUBY_METHOD_FUNC(hashShift<ValueOrKey::KEY>), 0);
+    rb_define_method(rbHash, "pop", RUBY_METHOD_FUNC(hashPop<ValueOrKey::BOTH>), 0);
+    rb_define_method(rbHash, "pop_value", RUBY_METHOD_FUNC(hashPop<ValueOrKey::VALUE>), 0);
+    rb_define_method(rbHash, "pop_key", RUBY_METHOD_FUNC(hashPop<ValueOrKey::KEY>), 0);
     // Enumerable would test both key and value for include?
     rb_define_method(rbHash, "include?", RUBY_METHOD_FUNC(hashHas), 1);
     rb_define_method(rbHash, "has_key?", RUBY_METHOD_FUNC(hashHas), 1);
