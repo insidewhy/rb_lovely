@@ -38,11 +38,11 @@ describe RbLovely::SortedHash do
     expect { |b| @hash.each(&b) }.to yield_successive_args([:c, 1], [:b, 14], [:d, 99])
   end
 
-  it "does not add duplicates" do
+  it "[]= overwrites values and resorts" do
     make_hash :b, 9, :d, 10
     expect(@hash.length).to equal 2
     @hash[:b] = 12
-    expect(@hash.length).to equal 2
+    expect(@hash.to_a).to eql [[:d, 10], [:b, 12]]
   end
 
   it "can access element by key" do
@@ -58,10 +58,10 @@ describe RbLovely::SortedHash do
     expect(@hash[:b]).to equal 14
   end
 
-  it "mixes in method from Enumerable" do
-    make_hash 2, 9, 15, 2, 16, 4, 3, 1
+  it "mixes in methods from Enumerable" do
+    make_hash :b, 9, :o, 2, :p, 4, :c, 1
     not_rejected = @hash.reject { |k, v| v.odd? }
-    expect(not_rejected).to eql([[15, 2], [16, 4]])
+    expect(not_rejected).to eql([[:o, 2], [:p, 4]])
   end
 
   it "has nice #to_s return value" do
@@ -186,9 +186,9 @@ describe RbLovely::SortedHash do
   end
 
   it "protects keys from garbage collector" do
-    @hash['apple'] = 'val'
+    @hash['apple'] = :d
     GC.start
     # TODO: this is not a valid test as it doesn't access the existing key value
-    expect(@hash['apple']).to eql 'val'
+    expect(@hash.pop_key).to eql 'apple'
   end
 end
