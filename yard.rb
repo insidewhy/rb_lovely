@@ -161,10 +161,14 @@ module RbLovely
   #   expect(hash[:y]).to equal 4
   #   expect(hash.length).to equal 3
   #   expect(hash.to_a).to eql [[:i, 1], [:y, 4], [:b, 16]]
+  #
+  #   # reverse order by overriding key comparison function.
+  #   rhash = RbLovely::SortedHash(compare: proc { |a, b| b <=> a })
   class SortedHash
     include Enumerable
 
     # @complexity O(n).
+    # @see .[]
     # @param content [Array] An array containing key, value, key, value ...
     # @param compare [Proc] Comparison function used to order values (rather than default
     #                       of using <=> method).
@@ -189,15 +193,18 @@ module RbLovely
     #   expect(hash.to_a).to eql [[:b, 1], [:a, 3]]
     def self.[](*content) ; end
 
-    # Set the value associated with a key. If the key already then it and its value are removed.
+    # Set the value associated with a key, replacing the existing key's value.
     # @complexity O(c).
+    # @see #replace
     # @return The value that was passed.
     # @example
     #   hash = RbLovely::SortedHash.new
     #   hash[:a] = 'yo'
     def []=(key, value) ; end
 
-    # Set the value associated with a key. If the key already then it and its value are removed.
+    # Set the value associated with a key, differs to #[]= in return value.
+    # @complexity O(c).
+    # @see #[]=
     # @return The value that was previously associated with the key or nil if the key was not present in the hash.
     # @example
     #   hash = RbLovely::SortedHash[:a, 'yi']
@@ -222,7 +229,7 @@ module RbLovely
     #   hash.each { |key, value| puts "#{key} => #{value}" }
     def each(&block) ; end
 
-    # Remove all values from the hash.
+    # Remove all key-value pairs from the hash.
     # @complexity O(n)
     # @example
     #   hash = RbLovely::SortedHash [:a, 10]
@@ -230,7 +237,8 @@ module RbLovely
     #   expect(hash.empty?).to equal true
     def clear ; end
 
-    # Retrieve value associated with the corresponding key or nil if the key doesn't exist.
+    # Retrieve value from hash using key.
+    # @return Value associated with the corresponding key or nil if the key doesn't exist.
     # @complexity O(c)
     # @example
     #   hash = RbLovely::SortedHash [:a, 2]
