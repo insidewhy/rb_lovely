@@ -85,6 +85,14 @@ describe RbLovely::SortedHash do
     expect(@hash.last).to eql [:b, 5]
   end
 
+  it "has working first_key and last_key methods" do
+    expect(@hash.first_key).to eql nil
+    expect(@hash.last_key).to eql nil
+    make_hash :b, 5, :e, 2
+    expect(@hash.first_key).to eql :e
+    expect(@hash.last_key).to eql :b
+  end
+
   it "has working delete" do
     make_hash :h, 3, :i, 1, :b, 7
     expect(@hash.delete :h).to equal 3

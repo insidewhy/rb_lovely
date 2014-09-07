@@ -179,6 +179,9 @@ VALUE hashToString(VALUE self) {
   return rb_str_new(stlString.data(), stlString.size());
 }
 
+enum class ValueOrKey { VALUE, KEY, BOTH };
+
+template <ValueOrKey V>
 VALUE hashFirst(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
   if (hash->container.empty()) {
@@ -186,9 +189,15 @@ VALUE hashFirst(VALUE self) {
   }
 
   auto &pair = *hash->container.get<1>().begin();
-  return rb_ary_new3(2, pair.key, pair.val);
+  if (V == ValueOrKey::BOTH) {
+    return rb_ary_new3(2, pair.key, pair.val);
+  }
+  else {
+    return V == ValueOrKey::VALUE ? pair.val : pair.key;
+  }
 }
 
+template <ValueOrKey V>
 VALUE hashLast(VALUE self) {
   Hash* hash = rubyCast<Hash>(self);
   if (hash->container.empty()) {
@@ -197,22 +206,13 @@ VALUE hashLast(VALUE self) {
 
   auto it = hash->container.get<1>().end();
   --it;
-  return rb_ary_new3(2, it->key, it->val);
-}
 
-VALUE hashFirstValue(VALUE self) {
-  Hash* hash = rubyCast<Hash>(self);
-  return hash->container.empty() ? Qnil : hash->container.get<1>().begin()->val;
-}
-
-VALUE hashLastValue(VALUE self) {
-  Hash* hash = rubyCast<Hash>(self);
-  if (hash->container.empty())
-    return Qnil;
-
-  auto last = hash->container.get<1>().end();
-  --last;
-  return last->val;
+  if (V == ValueOrKey::BOTH) {
+    return rb_ary_new3(2, it->key, it->val);
+  }
+  else {
+    return V == ValueOrKey::VALUE ? it->val : it->key;
+  }
 }
 
 VALUE hashDelete(VALUE self, VALUE toDelete) {
@@ -227,8 +227,6 @@ VALUE hashDelete(VALUE self, VALUE toDelete) {
     return valBackup;
   }
 }
-
-enum class ValueOrKey { VALUE, KEY, BOTH };
 
 template <ValueOrKey V>
 VALUE hashShift(VALUE self) {
@@ -311,10 +309,12 @@ extern "C" {
     rb_define_method(rbHash, "[]", RUBY_METHOD_FUNC(hashGet), 1);
     rb_define_method(rbHash, "each", RUBY_METHOD_FUNC(hashEach), 0);
     rb_define_method(rbHash, "to_s", RUBY_METHOD_FUNC(hashToString), 0);
-    rb_define_method(rbHash, "first", RUBY_METHOD_FUNC(hashFirst), 0);
-    rb_define_method(rbHash, "last", RUBY_METHOD_FUNC(hashLast), 0);
-    rb_define_method(rbHash, "first_value", RUBY_METHOD_FUNC(hashFirstValue), 0);
-    rb_define_method(rbHash, "last_value", RUBY_METHOD_FUNC(hashLastValue), 0);
+    rb_define_method(rbHash, "first", RUBY_METHOD_FUNC(hashFirst<ValueOrKey::BOTH>), 0);
+    rb_define_method(rbHash, "first_value", RUBY_METHOD_FUNC(hashFirst<ValueOrKey::VALUE>), 0);
+    rb_define_method(rbHash, "first_key", RUBY_METHOD_FUNC(hashFirst<ValueOrKey::KEY>), 0);
+    rb_define_method(rbHash, "last", RUBY_METHOD_FUNC(hashLast<ValueOrKey::BOTH>), 0);
+    rb_define_method(rbHash, "last_value", RUBY_METHOD_FUNC(hashLast<ValueOrKey::VALUE>), 0);
+    rb_define_method(rbHash, "last_key", RUBY_METHOD_FUNC(hashLast<ValueOrKey::KEY>), 0);
     rb_define_method(rbHash, "delete", RUBY_METHOD_FUNC(hashDelete), 1);
     // rb_define_method(rbHash, "reject!", RUBY_METHOD_FUNC(hashMutatingReject), 0);
     // rb_define_method(rbHash, "reject_first!", RUBY_METHOD_FUNC(hashMutatingRejectFirst), 0);
